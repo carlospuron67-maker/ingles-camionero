@@ -11,7 +11,7 @@ from pydub import AudioSegment
 from gtts import gTTS
 
 # --- CONFIGURACIÓN TÉCNICA ---
-AudioSegment.converter = "ffmpeg.exe"
+#AudioSegment.converter = "ffmpeg.exe"
 AudioSegment.ffprobe = "ffprobe.exe"
 
 st.set_page_config(page_title="Trucker English Editor", page_icon="🚛", layout="centered")
