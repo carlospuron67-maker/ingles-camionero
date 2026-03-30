@@ -1,104 +1,156 @@
-import joblib
-import pandas as pd
-import numpy as np
-import warnings
+import streamlit as st
+import os
+import re
+import random
+import asyncio
+import edge_tts
+import glob
+import base64
+from groq import Groq
+from pydub import AudioSegment
+from gtts import gTTS
 
-warnings.filterwarnings('ignore')
+# --- CONFIGURACIÓN TÉCNICA ---
+#AudioSegment.converter = "ffmpeg.exe"
+AudioSegment.ffprobe = "ffprobe.exe"
 
-# =============================================================================
-# 1. VALORES MAESTROS (LOS QUE TÚ PEGAS)
-# =============================================================================
-DNA_MASTER = {
-    'RS_vs_SPY': 4.185,
-    'Tightness': 1.690,
-    'Media_Conv': 4.170,
-    'Vol_DryUp': 0.585,
-    'Dist_SMA50': 3.500,
-    'Dist_Max': -7.500
-}
+st.set_page_config(page_title="Trucker English Editor", page_icon="🚛", layout="centered")
 
-UMBRAL_PARECIDO = 65.0  
+# --- MEMORIA DE SESIÓN (Para no perder cambios al recargar) ---
+if 'lista_palabras' not in st.session_state:
+    st.session_state.lista_palabras = """A, all, am, an, and, any, are, at, beams, binder, box, BOL, bill, of, load, unload, been, brake, cab, can, card, CDL, charged, chassis, check, checked, city, clean, coming, going, go, clear, commercial, complete, compliance, compliant, container, cracked, cracks, current, cuts, damage, DVIR, days, did, do, does, down, driver, DOT, eight, ELD, road, roadside, electronic, email, emergency, equipment, everything, extinguisher, file, fine, fire, flat, fluid, flush, for, found, full, fuses, gauge, give, glass, glove, going, good, handy, have, here, high, holding, horn, hours, how, I, identification, in, inspect, inspection, insurance, is, it, know, last, leaks, left, license, lights, locked, locks, looking, openn, closee, drownw, hubb, logs, low, me, medical, menu, mode, morning, my, number, need, no, now, okay, on, or, output, outside, paperwork, parking, permit, alcohol, drugs, substances, issues, please, problem, pressure, pre-trip, properly, push, put, registration, release, reverse, right, rims, running, safe, screen, seatbelt, secured, see, send, service, shape, show, sidewall, signs, signal, sitting, solid, spare, step, sure, switching, system, tail, test, flat, mirror, engine, testing, the, there, them, through, tight, tire, tires, to, today, transfer, transmit, travel, tread, triangles, truck, turn, unit, up, over, give, valid, vehicle, via, why, washer, where, will, windshield, wipers, with, work, working, yes, you, your, zone, off, when, was, inspection, last, on, what, which, how, pull-off"""
 
-LISTA_PREVIA = [
-    'JNJ', 'COST', 'MRK', 'KO', 'LIN', 'VZ', 'CAT', 'AMGN', 'HON', 'PFE', 'DE', 'AMAT', 'GILD', 'T', 'LMT', 'LRCX', 'SBUX',
-    'MO', 'TGT', 'CL', 'NOC', 'CSX', 'APD', 'FDX', 'MCK', 'ADM', 'AKAM', 'ATO', 'BALL', 'CBOE', 'CHD', 'CMS', 'CNP', 'DGX', 
-    'DLR', 'DTE', 'DVA', 'EBAY', 'ENPH', 'ETN', 'ETR', 'FAST', 'FE', 'FFIV', 'GRMN', 'HAL', 'HII', 'HSY', 'HWM', 'IRM', 'JCI', 
-    'KLAC', 'KMI', 'LHX', 'MSI', 'NI', 'PPL', 'REG', 'SRE', 'SYY', 'TDY', 'TMUS', 'WEC', 'WMB', 'XEL'
-]
+if 'prompt_maestro' not in st.session_state:
+    st.session_state.prompt_maestro = """Actúa como un oficial del DOT en una inspección de carretera real en Estados Unidos. Tu objetivo es generar bloques de práctica de inglés para un camionero.
 
-# =============================================================================
-# 2. MOTOR LÓGICO (BASICO)
-# =============================================================================
+REGLAS DE ORO:
+1. Lenguaje Real: Usa inglés hablado, directo y a veces seco. No uses frases de libro de texto. Habla como un oficial con prisa.
+2. Vocabulario Obligatorio: Debes seleccionar palabras de forma aleatoria de esta lista y darles prioridad absoluta en las frases.
+3. Respuestas Cortas: El camionero debe responder con un máximo de 4 palabras. La claridad es más importante que la gramática perfecta.
+4. Variedad de Situaciones: Cambia el enfoque en cada bloque (revisión de ELD, frenos, luces, carga, alcohol/drogas, pesaje o papelería).
+5. Separador Obligatorio: Usa '###' estrictamente entre cada bloque.
 
-def get_hma(s, l):
-    w = np.arange(1, l + 1)
-    wma = lambda x: np.dot(x, w) / w.sum()
-    h = s.rolling(l//2).apply(wma, raw=True) * 2 - s.rolling(l).apply(wma, raw=True)
-    return h.rolling(int(np.sqrt(l))).apply(wma, raw=True)
+FORMATO DE SALIDA:
+ES: [Frase en español]
+EN: [Lo que dice el oficial en inglés]
+RES: [Respuesta corta del camionero en inglés]."""
 
-def calcular_genes(df, spy_series):
-    # Aseguramos que las fechas coincidan quitando zonas horarias
-    df.index = pd.to_datetime(df.index).tz_localize(None)
-    spy_series.index = pd.to_datetime(spy_series.index).tz_localize(None)
+# --- CONFIGURACIÓN API ---
+GROQ_API_KEY = "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" 
+client = Groq(api_key=GROQ_API_KEY)
+MODELO_ACTUAL = "llama-3.3-70b-versatile"
+
+async def generate_edge_audio(text, voice, filename):
+    communicate = edge_tts.Communicate(text, voice)
+    await communicate.save(filename)
+
+# --- INTERFAZ ---
+st.title("🚛 Trucker English Pro")
+
+# --- BLOQUE DE EDICIÓN (EXPANDER) ---
+with st.expander("⚙️ Editar Lista de Palabras y Prompt"):
+    st.session_state.lista_palabras = st.text_area(
+        "Tu Lista de Vocabulario:", 
+        value=st.session_state.lista_palabras, 
+        height=200
+    )
+    st.session_state.prompt_maestro = st.text_area(
+        "Instrucciones para la IA (Prompt):", 
+        value=st.session_state.prompt_maestro, 
+        height=150
+    )
+    st.info("Cualquier cambio aquí se aplicará en la siguiente generación.")
+
+# --- GENERACIÓN ---
+cantidad = st.slider("Frases a generar", 1, 15, 5)
+
+if st.button("🚀 Generar Lecciones", use_container_width=True):
+    # Limpiar archivos viejos
+    for f in glob.glob("leccion_*.mp3"):
+        try: os.remove(f)
+        except: pass
     
-    common = df.index.intersection(spy_series.index)
-    if len(common) < 60: return None
+    seed = random.randint(1, 100000)
     
-    c, v = df['Close'].loc[common], df['Volume'].loc[common]
-    s_c = spy_series.loc[common]
+    # Construcción dinámica del prompt
+    prompt_final = f"""
+    {st.session_state.prompt_maestro}
+    CANTIDAD: {cantidad} bloques.
+    REGLA: Usa separador '###'.
+    FORMATO:
+    ES: [frase en español]
+    EN: [pregunta en inglés]
+    RES: [respuesta corta en inglés]
     
-    rs = ((c.iloc[-1]/c.iloc[-60]) - (s_c.iloc[-1]/s_c.iloc[-60])) * 100
-    tight = (c.iloc[-10:].std() / c.iloc[-10:].mean()) * 100
-    s10, s20, s50 = c.rolling(10).mean().iloc[-1], c.rolling(20).mean().iloc[-1], c.rolling(50).mean().iloc[-1]
-    conv = (max(s10, s20, s50) / min(s10, s20, s50) - 1) * 100
-    dry = v.iloc[-5:].mean() / v.iloc[-30:].mean()
-    d50 = (c.iloc[-1] / s50 - 1) * 100
-    dmax = (c.iloc[-1] / c.iloc[-60:].max() - 1) * 100
-    
-    return {'RS_vs_SPY': rs, 'Tightness': tight, 'Media_Conv': conv, 'Vol_DryUp': dry, 'Dist_SMA50': d50, 'Dist_Max': dmax}
+    PALABRAS CLAVE PARA USAR: {st.session_state.lista_palabras}
+    ID de variación: {seed}
+    """
 
-def calcular_score(actual, maestro):
-    escalas = {'RS_vs_SPY': 10.0, 'Tightness': 2.0, 'Media_Conv': 3.0, 'Vol_DryUp': 0.3, 'Dist_SMA50': 5.0, 'Dist_Max': 8.0}
-    dist = sum(abs(actual[k] - maestro[k]) / escalas[k] for k in maestro.keys())
-    return round(100 * np.exp(-dist / 12), 1)
+    try:
+        with st.spinner("IA grabando audios..."):
+            completion = client.chat.completions.create(
+                model=MODELO_ACTUAL,
+                messages=[{"role": "user", "content": prompt_final}]
+            )
 
-def auditar(df):
-    df.index = pd.to_datetime(df.index).tz_localize(None)
-    ma = get_hma(df['Close'], 20)
-    ang = (ma - ma.shift(2)).iloc[-1]
-    return (ang > 0), "N/A" # Auditoría simplificada para estabilidad
+            texto_ia = completion.choices[0].message.content
+            bloques = [b for b in texto_ia.split('###') if "EN:" in b]
 
-# =============================================================================
-# 3. PROCESO DE DATOS
-# =============================================================================
+            for i, bloque in enumerate(bloques):
+                es_m = re.search(r"ES:(.*)", bloque)
+                en_m = re.search(r"EN:(.*)", bloque)
+                res_m = re.search(r"RES:(.*)", bloque)
 
-try:
-    data = joblib.load("data_maestra_descargadaspy.joblib")
-    spy = data.get("SPY")
-except:
-    data, spy = {}, None
+                if es_m and en_m and res_m:
+                    es_t, en_t, res_t = es_m.group(1).strip(), en_m.group(1).strip(), res_m.group(1).strip()
+                    
+                    st.subheader(f"Lección {i+1}")
+                    st.write(f"🇪🇸 {es_t}")
+                    st.write(f"🇺🇸 **{en_t}** | *{res_t}*")
 
-if data and spy is not None:
-    final_list, report = [], []
-    
-    for t, df in data.items():
-        if t == "SPY": continue
-        try:
-            genes = calcular_genes(df, spy['Close'])
-            if genes is None: continue
+                    voces = ['en-US-GuyNeural', 'en-US-AvaNeural', 'en-GB-SoniaNeural']
+                    voz = random.choice(voces)
+                    
+                    gTTS(es_t, lang='es').save("es.mp3")
+                    asyncio.run(generate_edge_audio(en_t, voz, "q.mp3"))
+                    asyncio.run(generate_edge_audio(res_t, voz, "a.mp3"))
+
+                    a_es, a_q, a_a = AudioSegment.from_mp3("es.mp3"), AudioSegment.from_mp3("q.mp3"), AudioSegment.from_mp3("a.mp3")
+                    pausa = AudioSegment.silent(duration=1000)
+                    
+                    final = a_es + pausa + (a_q + pausa) * 5 + (a_a + pausa) * 5
+                    audio_path = f"leccion_{i}.mp3"
+                    final.export(audio_path, format="mp3")
+                    st.audio(audio_path)
+
+    except Exception as e:
+        st.error(f"Error: {e}")
+
+# --- REPRODUCTOR MAESTRO ---
+def mostrar_reproductor_bucle():
+    archivos = glob.glob("leccion_*.mp3")
+    if not archivos: return
+    archivos.sort(key=lambda x: int(re.search(r'\d+', x).group()))
+
+    st.divider()
+    if st.button("🎧 Activar Bucle Maestro", use_container_width=True):
+        with st.spinner("Uniendo..."):
+            playlist = AudioSegment.empty()
+            pausa_p = AudioSegment.silent(duration=2500)
+            for f in archivos:
+                playlist += AudioSegment.from_mp3(f) + pausa_p
             
-            score = calcular_score(genes, DNA_MASTER)
-            abierto, _ = auditar(df)
+            playlist.export("master.mp3", format="mp3")
+            with open("master.mp3", "rb") as f:
+                b64 = base64.b64encode(f.read()).decode()
             
-            se_queda = (score >= UMBRAL_PARECIDO) or (t in LISTA_PREVIA and abierto)
-            
-            if se_queda:
-                final_list.append(t)
-                report.append({"Ticker": t, "ADN": score, "RS": round(genes['RS_vs_SPY'], 1)})
-        except: continue
+            st.markdown(f"""
+                <div style="text-align:center; background:#262730; padding:20px; border-radius:10px; border:2px solid #4CAF50;">
+                    <h3 style="color:#4CAF50;">Modo Camionero Activo</h3>
+                    <audio controls loop autoplay style="width:100%;">
+                        <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+                    </audio>
+                </div>
+            """, unsafe_allow_html=True)
 
-    # Reporte
-    if report:
-        print(pd.DataFrame(report).sort_values(by="ADN", ascending=False).to_string(index=False))
-    
-    print(f"\n📋 LISTA FINAL: {', '.join([f'\'{t}\'' for t in final_list])}")
+mostrar_reproductor_bucle()
