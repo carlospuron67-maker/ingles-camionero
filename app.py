@@ -33,7 +33,7 @@ REGLAS DE ORO:
 FORMATO DE SALIDA:
 ES: [Frase en español]
 EN: [Lo que dice el oficial en inglés]
-RES: [Respuesta corta del camionero en inglés]."""
+REN: [Respuesta corta del camionero en inglés]."""
 
 # --- CONFIGURACIÓN API (MODIFICADO ÚNICAMENTE PARA SECRETOS) ---
 if "GROQ_API_KEY" in st.secrets:
