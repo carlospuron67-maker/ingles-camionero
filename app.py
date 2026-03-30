@@ -27,7 +27,7 @@ REGLAS DE ORO:
 1. Lenguaje Real: Usa inglés hablado, directo y a veces seco. No uses frases de libro de texto. Habla con prisa.
 2. Vocabulario Obligatorio: Debes seleccionar palabras de forma aleatoria de esta lista y darles prioridad absoluta en las frases.
 3. Respuestas Cortas: Las respuestas deben tener un máximo de 4 palabras. La claridad es más importante que la gramática perfecta.
-4. Variedad de Situaciones: Cambia el enfoque en cada bloque .
+4. Variedad de Situaciones: Cambia el enfoque en cada bloque . Preguntas reales
 5. Separador Obligatorio: Usa '###' estrictamente entre cada bloque.
 6. Es espanol debe ser la traducion de la frase.
 
