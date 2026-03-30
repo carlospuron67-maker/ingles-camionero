@@ -98,6 +98,7 @@ if st.button("🚀 Generar Lecciones", use_container_width=True):
             completion = client.chat.completions.create(
                 model=MODELO_ACTUAL,
                 messages=[{"role": "user", "content": prompt_final}]
+                temperature=0.2
             )
     #================================================================================================
 
