@@ -78,7 +78,7 @@ if st.button("🚀 Generar Lecciones", use_container_width=True):
     
     seed = random.randint(1, 100000)
     
-     Construcción dinámica del prompt
+   #  Construcción dinámica del prompt
     prompt_final = f"""
     {st.session_state.prompt_maestro}
     CANTIDAD: {cantidad} bloques.
