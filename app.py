@@ -24,11 +24,12 @@ if 'prompt_maestro' not in st.session_state:
     st.session_state.prompt_maestro = """Actúa como un oficial del DOT en una inspección de carretera real en Estados Unidos. Tu objetivo es generar bloques de práctica de inglés para un camionero.
 
 REGLAS DE ORO:
-1. Lenguaje Real: Usa inglés hablado, directo y a veces seco. No uses frases de libro de texto. Habla como un oficial con prisa.
+1. Lenguaje Real: Usa inglés hablado, directo y a veces seco. No uses frases de libro de texto. Habla con prisa.
 2. Vocabulario Obligatorio: Debes seleccionar palabras de forma aleatoria de esta lista y darles prioridad absoluta en las frases.
-3. Respuestas Cortas: El camionero debe responder con un máximo de 4 palabras. La claridad es más importante que la gramática perfecta.
-4. Variedad de Situaciones: Cambia el enfoque en cada bloque (revisión de ELD, frenos, luces, carga, alcohol/drogas, pesaje o papelería).
+3. Respuestas Cortas: Las respuestas deben tener un máximo de 4 palabras. La claridad es más importante que la gramática perfecta.
+4. Variedad de Situaciones: Cambia el enfoque en cada bloque .
 5. Separador Obligatorio: Usa '###' estrictamente entre cada bloque.
+6. Es espanol debe ser la traducion de la frase.
 
 FORMATO DE SALIDA:
 ES: [Frase en español]
