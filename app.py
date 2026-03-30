@@ -29,7 +29,7 @@ REGLAS DE ORO:
 3. Respuestas Cortas: Las respuestas deben tener un máximo de 4 palabras. La claridad es más importante que la gramática perfecta.
 4. Variedad de Situaciones: Cambia el enfoque en cada bloque .
 5. Separador Obligatorio: Usa '###' estrictamente entre cada bloque.
-6. Es espanol debe ser la traducion de la frase.
+6. El espanol debe ser la traducion de la pregunta lo mas literal y parecida posible
 
 FORMATO DE SALIDA:
 ES: [Frase en español]
