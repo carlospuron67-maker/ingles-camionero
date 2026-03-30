@@ -21,13 +21,13 @@ if 'lista_palabras' not in st.session_state:
     st.session_state.lista_palabras = """A, all, am, an, and, any, are, at, beams, binder, box, BOL, bill, of, load, unload, been, brake, cab, can, card, CDL, charged, chassis, check, checked, city, clean, coming, going, go, clear, commercial, complete, compliance, compliant, container, cracked, cracks, current, cuts, damage, DVIR, days, did, do, does, down, driver, DOT, eight, ELD, road, roadside, electronic, email, emergency, equipment, everything, extinguisher, file, fine, fire, flat, fluid, flush, for, found, full, fuses, gauge, give, glass, glove, going, good, handy, have, here, high, holding, horn, hours, how, I, identification, in, inspect, inspection, insurance, is, it, know, last, leaks, left, license, lights, locked, locks, looking, open, close, drown, hub, logs, low, me, medical, menu, mode, morning, my, number, need, no, now, okay, on, or, output, outside, paperwork, parking, permit, alcohol, drugs, substances, issues, please, problem, pressure, pre-trip, properly, push, put, registration, release, reverse, right, rims, running, safe, screen, seatbelt, secured, see, send, service, shape, show, sidewall, signs, signal, sitting, solid, spare, step, sure, switching, system, tail, test, flat, mirror, engine, testing, the, there, them, through, tight, tire, tires, to, today, transfer, transmit, travel, tread, triangles, truck, turn, unit, up, over, give, valid, vehicle, via, why, washer, where, will, windshield, wipers, with, work, working, yes, you, your, zone, off, when, was, inspection, last, on, what, which, how, pull-off"""
 
 if 'prompt_maestro' not in st.session_state:
-    st.session_state.prompt_maestro = """Actúa como un oficial del DOT en una inspección de carretera real en Estados Unidos. Tu objetivo es generar bloques de práctica de inglés para un camionero.
+    st.session_state.prompt_maestro = """Actúa como un oficial del DOT en una inspección de carretera real en Estados Unidos. Tu objetivo es generar preguntas de práctica de inglés para un camionero.
 
 REGLAS DE ORO:
 1. Lenguaje Real: Usa inglés hablado, directo y a veces seco. No uses frases de libro de texto. Habla con prisa.
 2. Vocabulario Obligatorio: Debes seleccionar palabras de forma aleatoria de esta lista y darles prioridad absoluta en las frases.
 3. Respuestas Cortas: Las respuestas deben tener un máximo de 4 palabras. La claridad es más importante que la gramática perfecta.
-4. Variedad de Situaciones: Cambia el enfoque en cada bloque . Preguntas reales
+4. Variedad de Situaciones: Cambia el enfoque en cada bloque .
 5. Separador Obligatorio: Usa '###' estrictamente entre cada bloque.
 6. Es espanol debe ser la traducion de la frase.
 
