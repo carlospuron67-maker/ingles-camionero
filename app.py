@@ -101,23 +101,63 @@ if st.button("🚀 Generar Lecciones", use_container_width=True):
     #================================================================================================
 # --- PEGA ESTO EN SU LUGAR ---
 try:
-    with st.spinner("IA generando contenido y audio..."):
-        # Enviamos las reglas por un canal y los datos por otro
-        completion = client.chat.completions.create(
-            model=MODELO_ACTUAL,
-            messages=[
-                {
-                    "role": "system", 
-                    "content": st.session_state.prompt_maestro
-                },
-                {
-                    "role": "user", 
-                    "content": f"Genera EXACTAMENTE {cantidad} bloques. Usa estas palabras: {st.session_state.lista_palabras}. ID: {seed}. IMPORTANTE: 'RES:' siempre en INGLÉS."
-                }
-            ],
-            temperature=0.5, # Esto hace que sea más obediente con el conteo de frases
-            max_tokens=1500  # Suficiente para 15 frases cortas
-        )
+        with st.spinner("IA generando contenido y audio..."):
+            # Esta parte debe tener 8 espacios de margen
+            completion = client.chat.completions.create(
+                model=MODELO_ACTUAL,
+                messages=[
+                    {
+                        "role": "system", 
+                        "content": st.session_state.prompt_maestro
+                    },
+                    {
+                        "role": "user", 
+                        "content": f"Genera EXACTAMENTE {cantidad} bloques. Usa estas palabras: {st.session_state.lista_palabras}. ID: {seed}. IMPORTANTE: 'RES:' siempre en INGLÉS."
+                    }
+                ],
+                temperature=0.5,
+                max_tokens=1500
+            )
+
+            # ESTA LÍNEA ES LA QUE DABA ERROR: Ahora está perfectamente alineada con 'completion'
+            texto_ia = completion.choices[0].message.content
+            
+            # Separamos los bloques
+            bloques = [b for b in texto_ia.split('###') if "EN:" in b]
+
+            for i, bloque in enumerate(bloques):
+                es_m = re.search(r"ES:(.*)", bloque)
+                en_m = re.search(r"EN:(.*)", bloque)
+                res_m = re.search(r"RES:(.*)", bloque)
+
+                if es_m and en_m and res_m:
+                    es_t = es_m.group(1).strip()
+                    en_t = en_m.group(1).strip()
+                    res_t = res_m.group(1).strip()
+                    
+                    st.subheader(f"Lección {i+1}")
+                    st.write(f"🇪🇸 {es_t}")
+                    st.write(f"🇺🇸 **{en_t}** | *{res_t}*")
+
+                    voces = ['en-US-GuyNeural', 'en-US-AvaNeural', 'en-GB-SoniaNeural']
+                    voz = random.choice(voces)
+                    
+                    gTTS(es_t, lang='es').save("es.mp3")
+                    asyncio.run(generate_edge_audio(en_t, voz, "q.mp3"))
+                    asyncio.run(generate_edge_audio(res_t, voz, "a.mp3"))
+
+                    a_es = AudioSegment.from_mp3("es.mp3")
+                    a_q = AudioSegment.from_mp3("q.mp3")
+                    a_a = AudioSegment.from_mp3("a.mp3")
+                    pausa = AudioSegment.silent(duration=1000)
+                    
+                    final = a_es + pausa + (a_q + pausa) * 5 + (a_a + pausa) * 5
+                    audio_path = f"leccion_{i}.mp3"
+                    final.export(audio_path, format="mp3")
+                    st.audio(audio_path)
+
+    except Exception as e:
+        st.error(f"Error técnico: {e}")
     #===============================================================================================
 
             texto_ia = completion.choices[0].message.content
