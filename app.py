@@ -79,25 +79,46 @@ if st.button("🚀 Generar Lecciones", use_container_width=True):
     seed = random.randint(1, 100000)
     
     # Construcción dinámica del prompt
-    prompt_final = f"""
-    {st.session_state.prompt_maestro}
-    CANTIDAD: {cantidad} bloques.
-    REGLA: Usa separador '###'.
-    FORMATO:
-    ES: [frase en español]
-    EN: [pregunta en inglés]
-    RES: [respuesta corta en inglés]
+    #prompt_final = f"""
+    #{st.session_state.prompt_maestro}
+    #CANTIDAD: {cantidad} bloques.
+    #REGLA: Usa separador '###'.
+    #FORMATO:
+    #ES: [frase en español]
+    #EN: [pregunta en inglés]
+    #RES: [respuesta corta en inglés]
     
-    PALABRAS CLAVE PARA USAR: {st.session_state.lista_palabras}
-    ID de variación: {seed}
-    """
+    #PALABRAS CLAVE PARA USAR: {st.session_state.lista_palabras}
+    #ID de variación: {seed}
+    #"""
 
-    try:
-        with st.spinner("IA grabando audios..."):
-            completion = client.chat.completions.create(
-                model=MODELO_ACTUAL,
-                messages=[{"role": "user", "content": prompt_final}]
-            )
+    #try:
+       # with st.spinner("IA grabando audios..."):
+            #completion = client.chat.completions.create(
+               # model=MODELO_ACTUAL,
+               # messages=[{"role": "user", "content": prompt_final}]
+           # )
+    #================================================================================================
+# --- PEGA ESTO EN SU LUGAR ---
+try:
+    with st.spinner("IA generando contenido y audio..."):
+        # Enviamos las reglas por un canal y los datos por otro
+        completion = client.chat.completions.create(
+            model=MODELO_ACTUAL,
+            messages=[
+                {
+                    "role": "system", 
+                    "content": st.session_state.prompt_maestro
+                },
+                {
+                    "role": "user", 
+                    "content": f"Genera EXACTAMENTE {cantidad} bloques. Usa estas palabras: {st.session_state.lista_palabras}. ID: {seed}. IMPORTANTE: 'RES:' siempre en INGLÉS."
+                }
+            ],
+            temperature=0.5, # Esto hace que sea más obediente con el conteo de frases
+            max_tokens=1500  # Suficiente para 15 frases cortas
+        )
+    #===============================================================================================
 
             texto_ia = completion.choices[0].message.content
             bloques = [b for b in texto_ia.split('###') if "EN:" in b]
