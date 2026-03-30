@@ -35,8 +35,13 @@ ES: [Frase en español]
 EN: [Lo que dice el oficial en inglés]
 RES: [Respuesta corta del camionero en inglés]."""
 
-# --- CONFIGURACIÓN API ---
-GROQ_API_KEY = "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" 
+# --- CONFIGURACIÓN API (MODIFICADO ÚNICAMENTE PARA SECRETOS) ---
+if "GROQ_API_KEY" in st.secrets:
+    GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
+else:
+    st.error("Error: No se encontró GROQ_API_KEY en los secretos de Streamlit.")
+    st.stop()
+
 client = Groq(api_key=GROQ_API_KEY)
 MODELO_ACTUAL = "llama-3.3-70b-versatile"
 
