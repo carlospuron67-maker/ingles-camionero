@@ -48,7 +48,7 @@ FORMATO DE SALIDA EXACTO (no cambies nada):
 
 ES: [Traducción literal al español]
 EN: [Lo que dice el oficial en inglés usando palabras de la lista]
-EN_RES: [Respuesta corta del camionero en inglés - máximo 4 palabras]."""
+EN_RES: [Truck driver's short reply in ENGLISH - max 4 words]."""
 
 
 # --- CONFIGURACIÓN API (MODIFICADO ÚNICAMENTE PARA SECRETOS) ---
