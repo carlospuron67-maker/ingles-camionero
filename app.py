@@ -30,7 +30,7 @@ REGLAS DE ORO (sigue todas estrictamente):
 2. Vocabulario Obligatorio: En cada frase que diga el oficial, selecciona al azar varias palabras de esta "lista de palabras" definidas anteriormente y dales prioridad ABSOLUTA. Intégralas de forma natural siempre que sea posible:
 
 
-3. Contenido variado: NO generes solo preguntas. Mezcla en cada respuesta:
+3. Contenido variado como:
    - Preguntas
    - Indicaciones y orientaciones ("Pull over", "Show me", "Step out")
    - Advertencias ("That's a violation")
@@ -43,6 +43,7 @@ REGLAS DE ORO (sigue todas estrictamente):
 6. Separador: Usa exactamente '###' entre cada bloque. Nada más.
 
 7. Español: La línea "ES:" debe ser la traducción literal y más cercana posible de lo que dice el oficial en inglés.
+8- Lo expresado por el oficia DOT no debe ser oraciones largas
 
 FORMATO DE SALIDA EXACTO (no cambies nada):
 
