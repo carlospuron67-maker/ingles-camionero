@@ -21,34 +21,24 @@ if 'lista_palabras' not in st.session_state:
     st.session_state.lista_palabras = """A, all, am, an, and, any, are, at, axle, beams, binder, box, BOL, bill, of, load,slop, inspection bay, lot, parking bay, parking space, pull-off, unload, been, brake, cab, can, card, CDL, charged, chassis, check, city, clean, clear, commercial, complete, compliance, compliant, container, cracked, cracks, current, cuts, damage, DVIR, days, did, do, does, down, driver, DOT, eight, ELD, electronic, email, emergency, equipment, everything, extinguisher, fifth-wheel, file, fine, fire, flat, fluid, flush, for, found, full, fuses, gauge, give, glass, glove, go, good, handy, have, here, high, holding, horn, hours, how, I, identification, in, inspect, insurance, is, it, know, landing-gear, last, leaks, left, license, lights, locked, logs, low, me, medical, menu, mirror, mode, morning, my, number, need, no, now, okay, on, open, or, output, outside, over, paperwork, parking, permit, alcohol, drugs, substances, issues, please, problem, pressure, pre-trip, properly, pull-off, push, put, registration, release, reverse, right, rims, road, roadside, running, safe, screen, seatbelt, secured, see, send, service, shape, show, sidewall, signs, signal, sitting, solid, spare, step, sure, switching, system, tail, tandem, test, the, there, them, through, tight, tire, today, transfer, transmit, travel, tread, triangles, truck, turn, unit, up, valid, vehicle, via, washer, was, what, when, where, which, why, will, windshield, wipers, with, work, yes, you, your, zone"""
 
 if 'prompt_maestro' not in st.session_state:
-    st.session_state.prompt_maestro = """Actúa como un oficial del DOT real haciendo una inspección de carretera en Estados Unidos. Tu objetivo es crear práctica de inglés hablado para un camionero hispanohablante.
+    st.session_state.prompt_maestro = """You are a real DOT officer doing a roadside inspection. Create English practice for a Spanish-speaking truck driver.
 
-REGLAS DE ORO (sigue todas estrictamente):
+STRICT RULES - Follow in EVERY response:
 
-1. Lenguaje Real: Usa inglés directo, seco, hablado y con prisa, como un oficial real en la carretera. Nada de lenguaje formal o de libro.
+- Use direct, dry, hurried spoken English. No textbook language.
+- In every officer sentence, randomly use several words from this "lista_palabras":
+- ALWAYS mix: questions + instructions/commands + warnings + observations/findings. Never only questions.
+- EN_RES: Always in English, max 4 words. Never Spanish.
+- Each block: different inspection topic.
+- Use exactly '###' between blocks.
 
-2. Vocabulario Obligatorio: En cada frase que diga el oficial, selecciona al azar varias palabras de "lista_palabras" definidas anteriormente y dales prioridad ABSOLUTA. Intégralas de forma natural siempre que sea posible:
-
-
-3. Contenido variado: NO generes solo preguntas. Mezcla en cada respuesta:
-   - Preguntas
-   - Indicaciones y orientaciones ("Pull over", "Show me", "Step out")
-   - Advertencias ("That's a violation")
-   - Señalamientos y hallazgos ("I see cracks", "Brakes are worn", "Leaking fluid")
-
-4. Respuesta del camionero: Máximo 4 palabras. Prioriza claridad sobre gramática perfecta.
-
-5. Variedad: Cada bloque debe enfocarse en una situación diferente (papeles, luces, frenos, neumáticos, carga, ELD, DVIR, etc.).
-
-6. Separador: Usa exactamente '###' entre cada bloque. Nada más.
-
-7. Español: La línea "ES:" debe ser la traducción literal y más cercana posible de lo que dice el oficial en inglés.
-8. Recuerda mezclar preguntas, indicaciones, advertencias y señalamientos en cada bloque.
-FORMATO DE SALIDA EXACTO (no cambies nada):
+OUTPUT FORMAT (exact every time):
 
 ES: [Literal Spanish translation]
-EN: [Lo que dice el oficial en inglés usando palabras de la lista_palabras]
-EN_RES: [Truck driver's short reply in ENGLISH - max 4 words]."""
+EN: [Officer English using list words]
+EN_RES: [Driver short English reply - max 4 words]
+
+Mix types in every block. Driver speaks only English."""
 
 
 # --- CONFIGURACIÓN API (MODIFICADO ÚNICAMENTE PARA SECRETOS) ---
