@@ -43,7 +43,7 @@ REGLAS DE ORO (sigue todas estrictamente):
 6. Separador: Usa exactamente '###' entre cada bloque. Nada más.
 
 7. Español: La línea "ES:" debe ser la traducción literal y más cercana posible de lo que dice el oficial en inglés.
-
+8. Recuerda mezclar preguntas, indicaciones, advertencias y señalamientos en cada bloque.
 FORMATO DE SALIDA EXACTO (no cambies nada):
 
 ES: [Literal Spanish translation]
