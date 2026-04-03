@@ -21,20 +21,35 @@ if 'lista_palabras' not in st.session_state:
     st.session_state.lista_palabras = """A, all, am, an, and, any, are, at, axle, beams, binder, box, BOL, bill, of, load, unload, been, brake, cab, can, card, CDL, charged, chassis, check, city, clean, clear, commercial, complete, compliance, compliant, container, cracked, cracks, current, cuts, damage, DVIR, days, did, do, does, down, driver, DOT, eight, ELD, electronic, email, emergency, equipment, everything, extinguisher, fifth-wheel, file, fine, fire, flat, fluid, flush, for, found, full, fuses, gauge, give, glass, glove, go, good, handy, have, here, high, holding, horn, hours, how, I, identification, in, inspect, insurance, is, it, know, landing-gear, last, leaks, left, license, lights, locked, logs, low, me, medical, menu, mirror, mode, morning, my, number, need, no, now, okay, on, open, or, output, outside, over, paperwork, parking, permit, alcohol, drugs, substances, issues, please, problem, pressure, pre-trip, properly, pull-off, push, put, registration, release, reverse, right, rims, road, roadside, running, safe, screen, seatbelt, secured, see, send, service, shape, show, sidewall, signs, signal, sitting, solid, spare, step, sure, switching, system, tail, tandem, test, the, there, them, through, tight, tire, today, transfer, transmit, travel, tread, triangles, truck, turn, unit, up, valid, vehicle, via, washer, was, what, when, where, which, why, will, windshield, wipers, with, work, yes, you, your, zone"""
 
 if 'prompt_maestro' not in st.session_state:
-    st.session_state.prompt_maestro = """Actúa como un oficial del DOT en una inspección de carretera real en Estados Unidos. Tu objetivo es generar preguntas de práctica de inglés para un camionero.
+    st.session_state.prompt_maestro = """Actúa como un oficial del DOT real haciendo una inspección de carretera en Estados Unidos. Tu objetivo es crear práctica de inglés hablado para un camionero hispanohablante.
 
-REGLAS DE ORO:
-1. Lenguaje Real: Usa inglés hablado, directo y a veces seco. No uses frases de libro de texto. Habla con prisa.
-2. Vocabulario Obligatorio: Debes seleccionar palabras de forma aleatoria de esta lista y darles prioridad absoluta en las frases.
-3. Respuestas Cortas: Las respuestas deben tener un máximo de 4 palabras. La claridad es más importante que la gramática perfecta.
-4. Variedad de Situaciones: Cambia el enfoque en cada bloque .
-5. Separador Obligatorio: Usa '###' estrictamente entre cada bloque.
-6. El espanol debe ser la traducion de la pregunta lo mas literal y parecida posible
+REGLAS DE ORO (sigue todas estrictamente):
 
-FORMATO DE SALIDA:
-ES: [Frase en español]
-EN: [Lo que dice el oficial en inglés]
-EN_RES: [Respuesta corta del camionero en inglés]."""
+1. Lenguaje Real: Usa inglés directo, seco, hablado y con prisa, como un oficial real en la carretera. Nada de lenguaje formal o de libro.
+
+2. Vocabulario Obligatorio: En cada frase que diga el oficial, selecciona al azar varias palabras de esta "lista de palabras" definidas anteriormente y dales prioridad ABSOLUTA. Intégralas de forma natural siempre que sea posible:
+
+
+3. Contenido variado: NO generes solo preguntas. Mezcla en cada respuesta:
+   - Preguntas
+   - Indicaciones y orientaciones ("Pull over", "Show me", "Step out")
+   - Advertencias ("That's a violation")
+   - Señalamientos y hallazgos ("I see cracks", "Brakes are worn", "Leaking fluid")
+
+4. Respuesta del camionero: Máximo 4 palabras. Prioriza claridad sobre gramática perfecta.
+
+5. Variedad: Cada bloque debe enfocarse en una situación diferente (papeles, luces, frenos, neumáticos, carga, ELD, DVIR, etc.).
+
+6. Separador: Usa exactamente '###' entre cada bloque. Nada más.
+
+7. Español: La línea "ES:" debe ser la traducción literal y más cercana posible de lo que dice el oficial en inglés.
+
+FORMATO DE SALIDA EXACTO (no cambies nada):
+
+ES: [Traducción literal al español]
+EN: [Lo que dice el oficial en inglés usando palabras de la lista]
+EN_RES: [Respuesta corta del camionero en inglés - máximo 4 palabras]."""
+
 
 # --- CONFIGURACIÓN API (MODIFICADO ÚNICAMENTE PARA SECRETOS) ---
 if "GROQ_API_KEY" in st.secrets:
