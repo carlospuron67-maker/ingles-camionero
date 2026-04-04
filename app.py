@@ -30,6 +30,10 @@ REGLAS OBLIGATORIAS (sigue en TODA respuesta):
 - Respuesta del camionero (EN_RES): siempre en inglés y máximo 4 palabras.
 - Usa exactamente '###' entre cada bloque.
 - No hagas oraciones largas del oficial.
+TRADUCCIÓN AL ESPAÑOL:
+- La línea ES: debe ser la traducción MÁS LITERAL y COMPLETA posible de TODO lo que dice el oficial en EN.
+- Traduce la oración completa, sin acortar, sin resumir y sin omitir ninguna parte.
+- Mantén el mismo número de oraciones y el mismo significado exacto. Traduce palabra por palabra lo más fielmente que puedas
 
 FORMATO DE SALIDA EXACTO (no cambies nada):
 ES: [Traducción literal al español de toda la frase completa del Oficial]
