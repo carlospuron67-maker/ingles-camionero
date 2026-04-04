@@ -19,22 +19,22 @@ if 'lista_palabras' not in st.session_state:
     st.session_state.lista_palabras = """A, all, am, an, and, any, are, at, axle, beams, binder, box, BOL, bill, of, load,slop, inspection bay, lot, parking bay, parking space, pull-off, unload, been, brake, cab, can, card, CDL, charged, chassis, check, city, clean, clear, commercial, complete, compliance, compliant, container, cracked, cracks, current, cuts, damage, DVIR, days, did, do, does, down, driver, DOT, eight, ELD, electronic, email, emergency, equipment, everything, extinguisher, fifth-wheel, file, fine, fire, flat, fluid, flush, for, found, full, fuses, gauge, give, glass, glove, go, good, handy, have, here, high, holding, horn, hours, how, I, identification, in, inspect, insurance, is, it, know, landing-gear, last, leaks, left, license, lights, locked, logs, low, me, medical, menu, mirror, mode, morning, my, number, need, no, now, okay, on, open, or, output, outside, over, paperwork, parking, permit, alcohol, drugs, substances, issues, please, problem, pressure, pre-trip, properly, pull-off, push, put, registration, release, reverse, right, rims, road, roadside, running, safe, screen, seatbelt, secured, see, send, service, shape, show, sidewall, signs, signal, sitting, solid, spare, step, sure, switching, system, tail, tandem, test, the, there, them, through, tight, tire, today, transfer, transmit, travel, tread, triangles, truck, turn, unit, up, valid, vehicle, via, washer, was, what, when, where, which, why, will, windshield, wipers, with, work, yes, you, your, zone"""
 
 if 'prompt_maestro' not in st.session_state:
-    # === CAMBIO === Prompt_maestro más corto, claro y fuerte (recomendado)
-    st.session_state.prompt_maestro = """Eres un oficial del DOT real en una inspección de carretera en USA.
+    # === CAMBIO === Prompt_maestro más corto, fuerte y claro (para que mezcle tipos)
+    st.session_state.prompt_maestro = """Eres un oficial del DOT real haciendo una inspección de carretera en Estados Unidos.
 
 REGLAS OBLIGATORIAS (sigue en TODA respuesta):
-- Usa inglés hablado real, seco y con prisa. Nada de lenguaje de libro.
+- Usa inglés directo, seco y con prisa, como un oficial real.
 - En cada frase del oficial usa varias palabras de la lista de vocabulario (prioridad absoluta).
 - SIEMPRE mezcla en cada bloque: pregunta + indicación/comando + advertencia + señalamiento/hallazgo.
   NUNCA generes solo preguntas.
-- EN_RES: siempre en inglés, máximo 4 palabras. Nunca en español.
-- Usa exactamente '###' como separador entre bloques.
-- Cada bloque trata un tema diferente de inspección.
+- Respuesta del camionero (EN_RES): siempre en inglés y máximo 4 palabras.
+- Usa exactamente '###' entre cada bloque.
+- No hagas oraciones largas del oficial.
 
-FORMATO EXACTO:
-ES: [traducción literal al español]
-EN: [lo que dice el oficial]
-EN_RES: [respuesta corta del camionero en inglés]"""
+FORMATO DE SALIDA EXACTO (no cambies nada):
+ES: [Lo que dice el oficial en español]
+EN: [Lo que dice el oficial en inglés]
+EN_RES: [Respuesta corta del camionero en inglés]"""
 
 # --- CONFIGURACIÓN API ---
 if "GROQ_API_KEY" in st.secrets:
@@ -44,8 +44,8 @@ else:
     st.stop()
 
 client = Groq(api_key=GROQ_API_KEY)
-#MODELO_ACTUAL = "llama-3.3-70b-versatile"   # Recomendado (más estable que el 8B)
-MODELO_ACTUAL = "llama-3.1-8b-instant"
+MODELO_ACTUAL = "llama-3.3-70b-versatile"   # Mejor para esta tarea
+# MODELO_ACTUAL = "llama-3.1-8b-instant"
 
 async def generate_edge_audio(text, voice, filename):
     communicate = edge_tts.Communicate(text, voice)
@@ -64,7 +64,7 @@ with st.expander("⚙️ Editar Lista de Palabras y Prompt"):
     st.session_state.prompt_maestro = st.text_area(
         "Instrucciones para la IA (Prompt):",
         value=st.session_state.prompt_maestro,
-        height=150
+        height=180
     )
     st.info("Cualquier cambio aquí se aplicará en la siguiente generación.")
 
@@ -79,21 +79,21 @@ if st.button("🚀 Generar Lecciones", use_container_width=True):
    
     seed = random.randint(1, 1000000)
    
-    # === CAMBIO === Nonce único para romper el prompt caching de Groq
-    nonce = f"Nonce único: {seed} - {random.random():.12f} - Nueva generación"
+    # === CAMBIO === Nonce para romper caché de Groq + reforzar reglas
+    nonce = f"Variación única ID: {seed} - {random.random():.12f}"
 
-    # === CAMBIO === Construcción del prompt_final más limpia y reforzada
+    # === CAMBIO === Prompt final limpio y reforzado
     prompt_final = f"""
 {st.session_state.prompt_maestro}
 
-CANTIDAD: Genera exactamente {cantidad} bloques.
+Genera exactamente {cantidad} bloques.
 
-PALABRAS CLAVE PARA USAR: {st.session_state.lista_palabras}
+PALABRAS CLAVE: {st.session_state.lista_palabras}
 
 {nonce}
 
-Importante: Mezcla siempre los 4 tipos (pregunta + indicación + advertencia + hallazgo) en cada bloque.
-EN_RES siempre en inglés y máximo 4 palabras.
+Importante: Mezcla siempre pregunta, indicación, advertencia y hallazgo en los bloques.
+Nunca hagas solo preguntas. EN_RES siempre en inglés.
 """
 
     try:
@@ -101,21 +101,22 @@ EN_RES siempre en inglés y máximo 4 palabras.
             completion = client.chat.completions.create(
                 model=MODELO_ACTUAL,
                 messages=[{"role": "user", "content": prompt_final}],
-                # === CAMBIOS IMPORTANTES EN PARÁMETROS ===
-                temperature=0.75,      # Subido para más variedad (antes 0.2)
+                temperature=0.75,        # === CAMBIO === Más variedad
                 top_p=0.95,
-                frequency_penalty=0.4, # Reduce repetición de palabras/frases
-                presence_penalty=0.4,  # Ayuda a introducir nuevos temas
+                frequency_penalty=0.4,   # === CAMBIO === Reduce repetición
+                presence_penalty=0.4,
                 seed=seed
             )
 
             texto_ia = completion.choices[0].message.content
+            # === CAMBIO === Mejor separación de bloques
             bloques = [b.strip() for b in texto_ia.split('###') if b.strip() and "EN:" in b]
 
             for i, bloque in enumerate(bloques):
-                es_m = re.search(r"ES:\s*(.*)", bloque, re.DOTALL)
-                en_m = re.search(r"EN:\s*(.*)", bloque, re.DOTALL)
-                res_m = re.search(r"EN_RES:\s*(.*)", bloque, re.DOTALL)   # === CAMBIO === Ahora busca EN_RES
+                # === CAMBIO === Búsqueda más flexible del formato exacto que quieres
+                es_m = re.search(r"ES:\s*(.*?)(?=EN:|$)", bloque, re.DOTALL)
+                en_m = re.search(r"EN:\s*(.*?)(?=EN_RES:|$)", bloque, re.DOTALL)
+                res_m = re.search(r"EN_RES:\s*(.*)", bloque, re.DOTALL)
 
                 if es_m and en_m and res_m:
                     es_t = es_m.group(1).strip()
@@ -142,7 +143,7 @@ EN_RES siempre en inglés y máximo 4 palabras.
                     final.export(audio_path, format="mp3")
                     st.audio(audio_path)
                 else:
-                    st.warning(f"Bloque {i+1} no tiene el formato esperado.")
+                    st.warning(f"Bloque {i+1} no tiene el formato correcto.")
 
     except Exception as e:
         st.error(f"Error: {e}")
