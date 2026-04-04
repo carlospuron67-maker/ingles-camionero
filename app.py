@@ -110,7 +110,11 @@ if st.button("🚀 Generar Lecciones", use_container_width=True):
         with st.spinner("IA grabando audios..."):
             completion = client.chat.completions.create(
                 model=MODELO_ACTUAL,
-                messages=[{"role": "user", "content": prompt_final}],
+                #messages=[{"role": "user", "content": prompt_final}],
+                messages=[
+    {"role": "system", "content": "You are a strict translator. Follow instructions exactly. No summarizing."},
+    {"role": "user", "content": prompt_final + f"\n\nUNIQUE_RUN_ID:{random.random()}"}
+],
                 temperature=0.2
             )
     #================================================================================================
