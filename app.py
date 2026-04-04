@@ -25,6 +25,8 @@ REGLAS OBLIGATORIAS (CRÍTICAS):
 - Usa inglés directo, seco y con prisa.
 - Cada bloque DEBE incluir: pregunta + comando + advertencia + hallazgo.
 - NO generes solo preguntas.
+- Alterna  cada bloque con: pregunta + indicación/comando + advertencia + señalamiento/hallazgo.
+
 
 TRADUCCIÓN (OBLIGATORIO Y ESTRICTO):
 - ES debe ser traducción EXACTA, COMPLETA y literal de EN.
