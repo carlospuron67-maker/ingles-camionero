@@ -25,12 +25,12 @@ if 'prompt_maestro' not in st.session_state:
 
 REGLAS DE ORO (sigue todas estrictamente):
 
-1. Lenguaje Real: Usa inglés directo, seco, hablado y con prisa, como un oficial real en la carretera. Nada de lenguaje formal o de libro.
+1. Lenguaje Real: Usa inglés directo, seco, hablado y con prisa, como un oficial real en la carretera. Nada de lenguaje formal , de libro o cursos.
 
-2. Vocabulario Obligatorio: En cada frase que diga el oficial, selecciona al azar varias palabras de esta "lista de palabras" definidas anteriormente y dales prioridad ABSOLUTA. Intégralas de forma natural siempre que sea posible:
+2. Vocabulario Obligatorio: En cada frase o leccion que diga el oficial, selecciona al azar varias palabras de esta "lista de palabras" definidas anteriormente y dales prioridad ABSOLUTA. Intégralas de forma natural siempre que sea posible:
 
 
-3. Contenido variado como:
+3. Alterna la lecciones o frases a partes iguales con:
    - Preguntas
    - Indicaciones y orientaciones ("Pull over", "Show me", "Step out")
    - Advertencias ("That's a violation")
@@ -38,11 +38,9 @@ REGLAS DE ORO (sigue todas estrictamente):
 
 4. Respuesta del camionero: Máximo 4 palabras. Prioriza claridad sobre gramática perfecta.
 
-5. Variedad: Cada bloque debe enfocarse en una situación diferente (papeles, luces, frenos, neumáticos, carga, ELD, DVIR, etc.).
+5. Separador: Usa exactamente '###' entre cada bloque. Nada más.
 
-6. Separador: Usa exactamente '###' entre cada bloque. Nada más.
-
-7. Español: La línea "ES:" debe ser la traducción literal y más cercana posible de lo que dice el oficial en inglés.
+6. Español: La línea "ES:" debe ser la traducción literal lo más cercana posible de lo que dice el oficial en inglés.
 8- Lo expresado por el oficia DOT no debe ser oraciones largas
 
 FORMATO DE SALIDA EXACTO (no cambies nada):
