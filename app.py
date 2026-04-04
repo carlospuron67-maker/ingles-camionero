@@ -40,12 +40,11 @@ REGLAS DE ORO (sigue todas estrictamente):
 
 5. Separador: Usa exactamente '###' entre cada bloque. Nada más.
 
-6. La línea "ES:" debe ser la traducción literal lo más cercana posible a lo expresado por el oficial del DOT.
-8- Lo expresado por el oficia DOT no debe ser oraciones largas
+6- Lo expresado por el oficia DOT no debe ser oraciones largas
 
 FORMATO DE SALIDA EXACTO (no cambies nada):
 
-ES: [Traducción literal al español]
+ES: [Traducción literal al español de lo expresado por el oficila del DOT]
 EN: [Lo que dice el oficial en inglés usando palabras de la lista]
 EN_RES: [Respuesta corta del camionero en inglés - máximo 4 palabras]."""
 
