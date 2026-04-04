@@ -58,8 +58,8 @@ else:
     st.stop()
 
 client = Groq(api_key=GROQ_API_KEY)
-MODELO_ACTUAL = "llama-3.3-70b-versatile"
-#MODELO_ACTUAL = "llama-3.1-8b-instant"
+#MODELO_ACTUAL = "llama-3.3-70b-versatile"
+MODELO_ACTUAL = "llama-3.1-8b-instant"
 
 async def generate_edge_audio(text, voice, filename):
     communicate = edge_tts.Communicate(text, voice)
