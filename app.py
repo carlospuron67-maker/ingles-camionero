@@ -19,7 +19,6 @@ if 'lista_palabras' not in st.session_state:
     st.session_state.lista_palabras = """A, all, am, an, and, any, are, at, axle, beams, binder, box, BOL, bill, of, load,slop, inspection bay, lot, parking bay, parking space, pull-off, unload, been, brake, cab, can, card, CDL, charged, chassis, check, city, clean, clear, commercial, complete, compliance, compliant, container, cracked, cracks, current, cuts, damage, DVIR, days, did, do, does, down, driver, DOT, eight, ELD, electronic, email, emergency, equipment, everything, extinguisher, fifth-wheel, file, fine, fire, flat, fluid, flush, for, found, full, fuses, gauge, give, glass, glove, go, good, handy, have, here, high, holding, horn, hours, how, I, identification, in, inspect, insurance, is, it, know, landing-gear, last, leaks, left, license, lights, locked, logs, low, me, medical, menu, mirror, mode, morning, my, number, need, no, now, okay, on, open, or, output, outside, over, paperwork, parking, permit, alcohol, drugs, substances, issues, please, problem, pressure, pre-trip, properly, pull-off, push, put, registration, release, reverse, right, rims, road, roadside, running, safe, screen, seatbelt, secured, see, send, service, shape, show, sidewall, signs, signal, sitting, solid, spare, step, sure, switching, system, tail, tandem, test, the, there, them, through, tight, tire, today, transfer, transmit, travel, tread, triangles, truck, turn, unit, up, valid, vehicle, via, washer, was, what, when, where, which, why, will, windshield, wipers, with, work, yes, you, your, zone"""
 
 if 'prompt_maestro' not in st.session_state:
-    # === CAMBIO === Prompt_maestro más corto, fuerte y claro (para que mezcle tipos)
     st.session_state.prompt_maestro = """Eres un oficial del DOT real haciendo una inspección de carretera en Estados Unidos.
 
 REGLAS OBLIGATORIAS (sigue en TODA respuesta):
@@ -30,11 +29,16 @@ REGLAS OBLIGATORIAS (sigue en TODA respuesta):
 - Respuesta del camionero (EN_RES): siempre en inglés y máximo 4 palabras.
 - Usa exactamente '###' entre cada bloque.
 - No hagas oraciones largas del oficial.
-- La traduccion debe ser completo y literal.
 
+TRADUCCIÓN (OBLIGATORIA Y ESTRICTA):
+- ES debe ser una traducción COMPLETA, literal y línea por línea de EN.
+- NO resumir, NO omitir, NO interpretar.
+- Cada palabra o idea en EN debe aparecer en ES.
+- Mantén el mismo orden de ideas.
+- Si falta información, la respuesta es inválida.
 
 FORMATO DE SALIDA EXACTO (no cambies nada):
-ES: [Traducción literal al español de todo lo que dice el  Oficial]
+ES: [Traducción literal completa al español de TODO lo que dice el oficial]
 EN: [Lo que dice el oficial en inglés]
 EN_RES: [Respuesta corta del camionero en inglés]"""
 
@@ -46,8 +50,7 @@ else:
     st.stop()
 
 client = Groq(api_key=GROQ_API_KEY)
-MODELO_ACTUAL = "llama-3.3-70b-versatile"   # Mejor para esta tarea
-# MODELO_ACTUAL = "llama-3.1-8b-instant"
+MODELO_ACTUAL = "llama-3.3-70b-versatile"
 
 async def generate_edge_audio(text, voice, filename):
     communicate = edge_tts.Communicate(text, voice)
@@ -56,7 +59,6 @@ async def generate_edge_audio(text, voice, filename):
 # --- INTERFAZ ---
 st.title("🚛 Trucker English Pro")
 
-# --- BLOQUE DE EDICIÓN ---
 with st.expander("⚙️ Editar Lista de Palabras y Prompt"):
     st.session_state.lista_palabras = st.text_area(
         "Tu Lista de Vocabulario:",
@@ -74,17 +76,13 @@ with st.expander("⚙️ Editar Lista de Palabras y Prompt"):
 cantidad = st.slider("Frases a generar", 1, 15, 5)
 
 if st.button("🚀 Generar Lecciones", use_container_width=True):
-    # Limpiar archivos viejos
     for f in glob.glob("leccion_*.mp3"):
         try: os.remove(f)
         except: pass
    
     seed = random.randint(1, 1000000)
-   
-    # === CAMBIO === Nonce para romper caché de Groq + reforzar reglas
     nonce = f"Variación única ID: {seed} - {random.random():.12f}"
 
-    # === CAMBIO === Prompt final limpio y reforzado
     prompt_final = f"""
 {st.session_state.prompt_maestro}
 
@@ -94,8 +92,15 @@ PALABRAS CLAVE: {st.session_state.lista_palabras}
 
 {nonce}
 
-Importante: Mezcla siempre pregunta, indicación, advertencia y hallazgo en los bloques.
-Nunca hagas solo preguntas. EN_RES siempre en inglés.
+Importante:
+- Mezcla siempre pregunta, indicación, advertencia y hallazgo.
+- Nunca hagas solo preguntas.
+- EN_RES siempre en inglés.
+
+TRADUCCIÓN OBLIGATORIA:
+- ES debe contener TODO el contenido de EN sin perder nada.
+- No se permite resumir ni acortar.
+- Si EN tiene múltiples ideas, ES debe reflejar TODAS.
 """
 
     try:
@@ -103,19 +108,17 @@ Nunca hagas solo preguntas. EN_RES siempre en inglés.
             completion = client.chat.completions.create(
                 model=MODELO_ACTUAL,
                 messages=[{"role": "user", "content": prompt_final}],
-                temperature=0.75,        # === CAMBIO === Más variedad
+                temperature=0.75,
                 top_p=0.95,
-                frequency_penalty=0.4,   # === CAMBIO === Reduce repetición
+                frequency_penalty=0.4,
                 presence_penalty=0.4,
                 seed=seed
             )
 
             texto_ia = completion.choices[0].message.content
-            # === CAMBIO === Mejor separación de bloques
             bloques = [b.strip() for b in texto_ia.split('###') if b.strip() and "EN:" in b]
 
             for i, bloque in enumerate(bloques):
-                # === CAMBIO === Búsqueda más flexible del formato exacto que quieres
                 es_m = re.search(r"ES:\s*(.*?)(?=EN:|$)", bloque, re.DOTALL)
                 en_m = re.search(r"EN:\s*(.*?)(?=EN_RES:|$)", bloque, re.DOTALL)
                 res_m = re.search(r"EN_RES:\s*(.*)", bloque, re.DOTALL)
@@ -135,6 +138,7 @@ Nunca hagas solo preguntas. EN_RES siempre en inglés.
                     gTTS(es_t, lang='es').save("es.mp3")
                     asyncio.run(generate_edge_audio(en_t, voz, "q.mp3"))
                     asyncio.run(generate_edge_audio(res_t, voz, "a.mp3"))
+
                     a_es = AudioSegment.from_mp3("es.mp3")
                     a_q = AudioSegment.from_mp3("q.mp3")
                     a_a = AudioSegment.from_mp3("a.mp3")
