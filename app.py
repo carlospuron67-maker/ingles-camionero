@@ -21,42 +21,30 @@ if 'lista_palabras' not in st.session_state:
     st.session_state.lista_palabras = """A, all, am, an, and, any, are, at, axle, beams, binder, box, BOL, bill, of, load,slop, inspection bay, lot, parking bay, parking space, pull-off, unload, been, brake, cab, can, card, CDL, charged, chassis, check, city, clean, clear, commercial, complete, compliance, compliant, container, cracked, cracks, current, cuts, damage, DVIR, days, did, do, does, down, driver, DOT, eight, ELD, electronic, email, emergency, equipment, everything, extinguisher, fifth-wheel, file, fine, fire, flat, fluid, flush, for, found, full, fuses, gauge, give, glass, glove, go, good, handy, have, here, high, holding, horn, hours, how, I, identification, in, inspect, insurance, is, it, know, landing-gear, last, leaks, left, license, lights, locked, logs, low, me, medical, menu, mirror, mode, morning, my, number, need, no, now, okay, on, open, or, output, outside, over, paperwork, parking, permit, alcohol, drugs, substances, issues, please, problem, pressure, pre-trip, properly, pull-off, push, put, registration, release, reverse, right, rims, road, roadside, running, safe, screen, seatbelt, secured, see, send, service, shape, show, sidewall, signs, signal, sitting, solid, spare, step, sure, switching, system, tail, tandem, test, the, there, them, through, tight, tire, today, transfer, transmit, travel, tread, triangles, truck, turn, unit, up, valid, vehicle, via, washer, was, what, when, where, which, why, will, windshield, wipers, with, work, yes, you, your, zone"""
 
 if 'prompt_maestro' not in st.session_state:
-    st.session_state.prompt_maestro = """Actúa como un oficial del DOT real haciendo una inspección de carretera en Estados Unidos. Tu objetivo es crear práctica de inglés hablado para un camionero hispanohablante.
+    st.session_state.prompt_maestro = """Actúa como un oficial del DOT real en una inspección de carretera. 
+Tu objetivo: Crear bloques de práctica siguiendo un patrón ESTRICTO.
 
-REGLAS DE ORO (sigue todas estrictamente):
+REGLAS DE ORO:
+1. Vocabulario: Usa palabras de la lista proporcionada.
+2. Estilo: Inglés directo, seco y rápido.
+3. SECUENCIA OBLIGATORIA (No puedes saltarte el orden):
+   Bloque 1: Pregunta (Question)
+   Bloque 2: Indicación/Comando (Command)
+   Bloque 3: Advertencia (Warning)
+   Bloque 4: Hallazgo (Finding)
+   ... y repetir el ciclo (1, 2, 3, 4, 1, 2...).
 
-1. Lenguaje Real: Usa inglés directo, seco, hablado y con prisa, como un oficial real en la carretera. Nada de lenguaje formal , de libro o cursos.
+EJEMPLOS DE ESTILO:
+- Pregunta: "Show me your CDL and medical card."
+- Comando: "Step out of the cab now."
+- Advertencia: "Your tire tread is getting low, watch it."
+- Hallazgo: "I found a leak in your secondary air system."
 
-2. Vocabulario Obligatorio: En cada frase o leccion que diga el oficial, selecciona al azar varias palabras de esta "lista de palabras" definidas anteriormente y dales prioridad ABSOLUTA. Intégralas de forma natural siempre que sea posible:
-
-
-3. ORDEN OBLIGATORIO DE LOS BLOQUES:
-
-Debes alternar en este orden exacto y repetir el patrón:
-
-1 → Pregunta  
-2 → Indicación / comando  
-3 → Advertencia  
-4 → Hallazgo  
-
-Luego repetir desde el inicio hasta completar la cantidad solicitada.
-
-REGLA CRÍTICA:
-- No se permite generar dos preguntas seguidas.
-- No se permite repetir el mismo tipo consecutivo.
-- Debes seguir el patrón exacto.
-
-4. Respuesta del camionero: Máximo 4 palabras. Prioriza claridad sobre gramática perfecta.
-
-5. Separador: Usa exactamente '###' entre cada bloque. Nada más.
-
-6- Lo expresado por el oficia DOT no debe ser oraciones largas
-
-FORMATO DE SALIDA EXACTO (no cambies nada):
-
-ES: [Lo expresado por el oficial del DOT ]
-EN: [Lo que dice el oficial en inglés usando palabras de la lista]
-EN_RES: [Respuesta corta del camionero en inglés - máximo 4 palabras]."""
+FORMATO DE SALIDA (Usa exactamente '###' para separar bloques):
+ES: [Frase en español]
+EN: [Frase del oficial]
+RES: [Respuesta del camionero, máx 4 palabras]
+###"""
 
 
 # --- CONFIGURACIÓN API (MODIFICADO ÚNICAMENTE PARA SECRETOS) ---
@@ -107,6 +95,12 @@ if st.button("🚀 Generar Lecciones", use_container_width=True):
     {st.session_state.prompt_maestro}
     CANTIDAD: {cantidad} bloques.
     REGLA: Usa separador '###'.
+   
+LISTA DE PALABRAS (Prioridad): {st.session_state.lista_palabras}
+
+RECUERDA: Empieza con Pregunta, luego Comando, luego Advertencia, luego Hallazgo. 
+PROHIBIDO generar dos preguntas seguidas.
+"""
     FORMATO:
     ES: [frase en español]
     EN: EN: [frase del oficial en inglés según el tipo: pregunta, comando, advertencia o hallazgo]]
@@ -122,8 +116,14 @@ if st.button("🚀 Generar Lecciones", use_container_width=True):
                 model=MODELO_ACTUAL,
                 #messages=[{"role": "user", "content": prompt_final}],
                 messages=[
-    {"role": "system", "content": "You are a strict translator. Follow instructions exactly. No summarizing."},
-    {"role": "user", "content": prompt_final + f"\n\nUNIQUE_RUN_ID:{random.random()}"}
+    {
+        "role": "system", 
+        "content": "You are a strict DOT inspector. You MUST follow the requested pattern (Question, Command, Warning, Finding) without exception. Do not repeat types. Be dry and direct."
+    },
+    {
+        "role": "user", 
+        "content": prompt_final
+    }
 ],
                 temperature=0.5
             )
