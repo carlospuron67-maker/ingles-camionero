@@ -109,7 +109,7 @@ if st.button("🚀 Generar Lecciones", use_container_width=True):
     REGLA: Usa separador '###'.
     FORMATO:
     ES: [frase en español]
-    EN: [pregunta en inglés]
+    EN: EN: [frase del oficial en inglés según el tipo: pregunta, comando, advertencia o hallazgo]]
     RES: [respuesta corta en inglés]
     
     PALABRAS CLAVE PARA USAR: {st.session_state.lista_palabras}
@@ -125,7 +125,7 @@ if st.button("🚀 Generar Lecciones", use_container_width=True):
     {"role": "system", "content": "You are a strict translator. Follow instructions exactly. No summarizing."},
     {"role": "user", "content": prompt_final + f"\n\nUNIQUE_RUN_ID:{random.random()}"}
 ],
-                temperature=0.2
+                temperature=0.5
             )
     #================================================================================================
 
