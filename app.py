@@ -30,11 +30,21 @@ REGLAS DE ORO (sigue todas estrictamente):
 2. Vocabulario Obligatorio: En cada frase o leccion que diga el oficial, selecciona al azar varias palabras de esta "lista de palabras" definidas anteriormente y dales prioridad ABSOLUTA. Intégralas de forma natural siempre que sea posible:
 
 
-3. Alterna la lecciones o frases a partes iguales con:
-   - Preguntas
-   - Indicaciones y orientaciones ("Pull over", "Show me", "Step out")
-   - Advertencias ("That's a violation")
-   - Señalamientos y hallazgos ("I see cracks", "Brakes are worn", "Leaking fluid")
+3. ORDEN OBLIGATORIO DE LOS BLOQUES:
+
+Debes alternar en este orden exacto y repetir el patrón:
+
+1 → Pregunta  
+2 → Indicación / comando  
+3 → Advertencia  
+4 → Hallazgo  
+
+Luego repetir desde el inicio hasta completar la cantidad solicitada.
+
+REGLA CRÍTICA:
+- No se permite generar dos preguntas seguidas.
+- No se permite repetir el mismo tipo consecutivo.
+- Debes seguir el patrón exacto.
 
 4. Respuesta del camionero: Máximo 4 palabras. Prioriza claridad sobre gramática perfecta.
 
