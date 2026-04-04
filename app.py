@@ -100,7 +100,7 @@ LISTA DE PALABRAS (Prioridad): {st.session_state.lista_palabras}
 
 RECUERDA: Empieza con Pregunta, luego Comando, luego Advertencia, luego Hallazgo. 
 PROHIBIDO generar dos preguntas seguidas.
-"""
+
     FORMATO:
     ES: [frase en español]
     EN: EN: [frase del oficial en inglés según el tipo: pregunta, comando, advertencia o hallazgo]
