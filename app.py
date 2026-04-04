@@ -11,38 +11,45 @@ from pydub import AudioSegment
 from gtts import gTTS
 
 # --- CONFIGURACIÓN TÉCNICA ---
+#AudioSegment.converter = "ffmpeg.exe"
 AudioSegment.ffprobe = "ffprobe.exe"
+
 st.set_page_config(page_title="Trucker English Editor", page_icon="🚛", layout="centered")
 
-# --- MEMORIA DE SESIÓN ---
+# --- MEMORIA DE SESIÓN (Para no perder cambios al recargar) ---
 if 'lista_palabras' not in st.session_state:
     st.session_state.lista_palabras = """A, all, am, an, and, any, are, at, axle, beams, binder, box, BOL, bill, of, load,slop, inspection bay, lot, parking bay, parking space, pull-off, unload, been, brake, cab, can, card, CDL, charged, chassis, check, city, clean, clear, commercial, complete, compliance, compliant, container, cracked, cracks, current, cuts, damage, DVIR, days, did, do, does, down, driver, DOT, eight, ELD, electronic, email, emergency, equipment, everything, extinguisher, fifth-wheel, file, fine, fire, flat, fluid, flush, for, found, full, fuses, gauge, give, glass, glove, go, good, handy, have, here, high, holding, horn, hours, how, I, identification, in, inspect, insurance, is, it, know, landing-gear, last, leaks, left, license, lights, locked, logs, low, me, medical, menu, mirror, mode, morning, my, number, need, no, now, okay, on, open, or, output, outside, over, paperwork, parking, permit, alcohol, drugs, substances, issues, please, problem, pressure, pre-trip, properly, pull-off, push, put, registration, release, reverse, right, rims, road, roadside, running, safe, screen, seatbelt, secured, see, send, service, shape, show, sidewall, signs, signal, sitting, solid, spare, step, sure, switching, system, tail, tandem, test, the, there, them, through, tight, tire, today, transfer, transmit, travel, tread, triangles, truck, turn, unit, up, valid, vehicle, via, washer, was, what, when, where, which, why, will, windshield, wipers, with, work, yes, you, your, zone"""
 
 if 'prompt_maestro' not in st.session_state:
-    st.session_state.prompt_maestro = """Eres un oficial del DOT real haciendo una inspección de carretera en Estados Unidos.
+    st.session_state.prompt_maestro = """Actúa como un oficial del DOT real haciendo una inspección de carretera en Estados Unidos. Tu objetivo es crear práctica de inglés hablado para un camionero hispanohablante.
 
-REGLAS OBLIGATORIAS 
-1- Usa inglés directo, seco y con prisa, como un oficial real.
-2- No pueden ser lecciones o frases largas no mas de 10 palabras
-3- En cada frase del oficial usa varias palabras de la lista de vocabulario (prioridad absoluta).
-4- Alterna la lecciones o frases a partes iguales con: Preguntas,Indicaciones y orientaciones ("Pull over", "Show me", "Step out"),Advertencias ("That's a violation"), Señalamientos y hallazgos ("I see cracks", "Brakes are worn", "Leaking fluid")
-4= Respuesta del camionero (EN_RES): siempre en inglés y máximo 4 palabras.
-5= Usa exactamente '###' entre cada bloque.
+REGLAS DE ORO (sigue todas estrictamente):
+
+1. Lenguaje Real: Usa inglés directo, seco, hablado y con prisa, como un oficial real en la carretera. Nada de lenguaje formal , de libro o cursos.
+
+2. Vocabulario Obligatorio: En cada frase o leccion que diga el oficial, selecciona al azar varias palabras de esta "lista de palabras" definidas anteriormente y dales prioridad ABSOLUTA. Intégralas de forma natural siempre que sea posible:
 
 
-TRADUCCIÓN (OBLIGATORIA Y ESTRICTA):
-- ES debe ser una traducción COMPLETA, literal y línea por línea de EN.
-- NO resumir, NO omitir, NO interpretar.
-- Cada palabra o idea en EN debe aparecer en ES.
-- Mantén el mismo orden de ideas.
-- Si falta información, la respuesta es inválida.
+3. Alterna la lecciones o frases a partes iguales con:
+   - Preguntas
+   - Indicaciones y orientaciones ("Pull over", "Show me", "Step out")
+   - Advertencias ("That's a violation")
+   - Señalamientos y hallazgos ("I see cracks", "Brakes are worn", "Leaking fluid")
+
+4. Respuesta del camionero: Máximo 4 palabras. Prioriza claridad sobre gramática perfecta.
+
+5. Separador: Usa exactamente '###' entre cada bloque. Nada más.
+
+6- Lo expresado por el oficia DOT no debe ser oraciones largas
 
 FORMATO DE SALIDA EXACTO (no cambies nada):
-ES: [Traducción literal completa al español de TODO lo que dice el oficial]
-EN: [Lo que dice el oficial en inglés]
-EN_RES: [Respuesta corta del camionero en inglés]"""
 
-# --- CONFIGURACIÓN API ---
+ES: [Lo expresado por el oficial del DOT ]
+EN: [Lo que dice el oficial en inglés usando palabras de la lista]
+EN_RES: [Respuesta corta del camionero en inglés - máximo 4 palabras]."""
+
+
+# --- CONFIGURACIÓN API (MODIFICADO ÚNICAMENTE PARA SECRETOS) ---
 if "GROQ_API_KEY" in st.secrets:
     GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
 else:
@@ -51,6 +58,7 @@ else:
 
 client = Groq(api_key=GROQ_API_KEY)
 MODELO_ACTUAL = "llama-3.3-70b-versatile"
+#MODELO_ACTUAL = "llama-3.1-8b-instant"
 
 async def generate_edge_audio(text, voice, filename):
     communicate = edge_tts.Communicate(text, voice)
@@ -59,16 +67,17 @@ async def generate_edge_audio(text, voice, filename):
 # --- INTERFAZ ---
 st.title("🚛 Trucker English Pro")
 
+# --- BLOQUE DE EDICIÓN (EXPANDER) ---
 with st.expander("⚙️ Editar Lista de Palabras y Prompt"):
     st.session_state.lista_palabras = st.text_area(
-        "Tu Lista de Vocabulario:",
-        value=st.session_state.lista_palabras,
+        "Tu Lista de Vocabulario:", 
+        value=st.session_state.lista_palabras, 
         height=200
     )
     st.session_state.prompt_maestro = st.text_area(
-        "Instrucciones para la IA (Prompt):",
-        value=st.session_state.prompt_maestro,
-        height=180
+        "Instrucciones para la IA (Prompt):", 
+        value=st.session_state.prompt_maestro, 
+        height=150
     )
     st.info("Cualquier cambio aquí se aplicará en la siguiente generación.")
 
@@ -76,80 +85,67 @@ with st.expander("⚙️ Editar Lista de Palabras y Prompt"):
 cantidad = st.slider("Frases a generar", 1, 15, 5)
 
 if st.button("🚀 Generar Lecciones", use_container_width=True):
+    # Limpiar archivos viejos
     for f in glob.glob("leccion_*.mp3"):
         try: os.remove(f)
         except: pass
-   
-    seed = random.randint(1, 1000000)
-    nonce = f"Variación única ID: {seed} - {random.random():.12f}"
-
+    
+    seed = random.randint(1, 100000)
+    
+   #  Construcción dinámica del prompt
     prompt_final = f"""
-{st.session_state.prompt_maestro}
-
-Genera exactamente {cantidad} bloques.
-
-PALABRAS CLAVE: {st.session_state.lista_palabras}
-
-{nonce}
-
-Importante:
-- Mezcla siempre pregunta, indicación, advertencia y hallazgo.
-- Nunca hagas solo preguntas.
-- EN_RES siempre en inglés.
-
-TRADUCCIÓN OBLIGATORIA:
-- ES debe contener TODO el contenido de EN sin perder nada.
-- No se permite resumir ni acortar.
-- Si EN tiene múltiples ideas, ES debe reflejar TODAS.
-"""
+    {st.session_state.prompt_maestro}
+    CANTIDAD: {cantidad} bloques.
+    REGLA: Usa separador '###'.
+    FORMATO:
+    ES: [frase en español]
+    EN: [pregunta en inglés]
+    RES: [respuesta corta en inglés]
+    
+    PALABRAS CLAVE PARA USAR: {st.session_state.lista_palabras}
+    ID de variación: {seed}
+    """
 
     try:
-        with st.spinner("IA generando lecciones..."):
+        with st.spinner("IA grabando audios..."):
             completion = client.chat.completions.create(
                 model=MODELO_ACTUAL,
                 messages=[{"role": "user", "content": prompt_final}],
-                temperature=0.75,
-                top_p=0.95,
-                frequency_penalty=0.4,
-                presence_penalty=0.4,
-                seed=seed
+                temperature=0.2
             )
+    #================================================================================================
+
+    #===============================================================================================
 
             texto_ia = completion.choices[0].message.content
-            bloques = [b.strip() for b in texto_ia.split('###') if b.strip() and "EN:" in b]
+            bloques = [b for b in texto_ia.split('###') if "EN:" in b]
 
             for i, bloque in enumerate(bloques):
-                es_m = re.search(r"ES:\s*(.*?)(?=EN:|$)", bloque, re.DOTALL)
-                en_m = re.search(r"EN:\s*(.*?)(?=EN_RES:|$)", bloque, re.DOTALL)
-                res_m = re.search(r"EN_RES:\s*(.*)", bloque, re.DOTALL)
+                es_m = re.search(r"ES:(.*)", bloque)
+                en_m = re.search(r"EN:(.*)", bloque)
+                res_m = re.search(r"RES:(.*)", bloque)
 
                 if es_m and en_m and res_m:
-                    es_t = es_m.group(1).strip()
-                    en_t = en_m.group(1).strip()
-                    res_t = res_m.group(1).strip()
-
+                    es_t, en_t, res_t = es_m.group(1).strip(), en_m.group(1).strip(), res_m.group(1).strip()
+                    
                     st.subheader(f"Lección {i+1}")
                     st.write(f"🇪🇸 {es_t}")
                     st.write(f"🇺🇸 **{en_t}** | *{res_t}*")
 
                     voces = ['en-US-GuyNeural', 'en-US-AvaNeural', 'en-GB-SoniaNeural']
                     voz = random.choice(voces)
-                   
+                    
                     gTTS(es_t, lang='es').save("es.mp3")
                     asyncio.run(generate_edge_audio(en_t, voz, "q.mp3"))
                     asyncio.run(generate_edge_audio(res_t, voz, "a.mp3"))
 
-                    a_es = AudioSegment.from_mp3("es.mp3")
-                    a_q = AudioSegment.from_mp3("q.mp3")
-                    a_a = AudioSegment.from_mp3("a.mp3")
+                    a_es, a_q, a_a = AudioSegment.from_mp3("es.mp3"), AudioSegment.from_mp3("q.mp3"), AudioSegment.from_mp3("a.mp3")
                     pausa = AudioSegment.silent(duration=1000)
-                   
+                    
                     final = a_es + pausa + (a_q + pausa) * 5 + (a_a + pausa) * 5
                     audio_path = f"leccion_{i}.mp3"
                     final.export(audio_path, format="mp3")
                     st.audio(audio_path)
-                else:
-                    st.warning(f"Bloque {i+1} no tiene el formato correcto.")
 
     except Exception as e:
         st.error(f"Error: {e}")
@@ -159,18 +155,19 @@ def mostrar_reproductor_bucle():
     archivos = glob.glob("leccion_*.mp3")
     if not archivos: return
     archivos.sort(key=lambda x: int(re.search(r'\d+', x).group()))
+
     st.divider()
     if st.button("🎧 Activar Bucle Maestro", use_container_width=True):
-        with st.spinner("Uniendo audios..."):
+        with st.spinner("Uniendo..."):
             playlist = AudioSegment.empty()
             pausa_p = AudioSegment.silent(duration=2500)
             for f in archivos:
                 playlist += AudioSegment.from_mp3(f) + pausa_p
-           
+            
             playlist.export("master.mp3", format="mp3")
             with open("master.mp3", "rb") as f:
                 b64 = base64.b64encode(f.read()).decode()
-           
+            
             st.markdown(f"""
                 <div style="text-align:center; background:#262730; padding:20px; border-radius:10px; border:2px solid #4CAF50;">
                     <h3 style="color:#4CAF50;">Modo Camionero Activo</h3>
