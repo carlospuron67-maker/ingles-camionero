@@ -32,7 +32,7 @@ REGLAS OBLIGATORIAS (sigue en TODA respuesta):
 - No hagas oraciones largas del oficial.
 
 FORMATO DE SALIDA EXACTO (no cambies nada):
-ES: [Lo que dice el oficial en español]
+ES: [Traducción literal al español de lo que dice el oficial]
 EN: [Lo que dice el oficial en inglés]
 EN_RES: [Respuesta corta del camionero en inglés]"""
 
