@@ -103,7 +103,7 @@ PROHIBIDO generar dos preguntas seguidas.
 """
     FORMATO:
     ES: [frase en español]
-    EN: EN: [frase del oficial en inglés según el tipo: pregunta, comando, advertencia o hallazgo]]
+    EN: EN: [frase del oficial en inglés según el tipo: pregunta, comando, advertencia o hallazgo]
     RES: [respuesta corta en inglés]
     
     PALABRAS CLAVE PARA USAR: {st.session_state.lista_palabras}
