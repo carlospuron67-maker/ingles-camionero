@@ -40,7 +40,7 @@ REGLAS DE ORO (sigue todas estrictamente):
 
 5. Separador: Usa exactamente '###' entre cada bloque. Nada más.
 
-6. Español: La línea "ES:" debe ser la traducción literal lo más cercana posible de lo que dice el oficial en inglés.
+6. La línea "ES:" debe ser la traducción literal lo más cercana posible a lo expresado por el oficial del DOT.
 8- Lo expresado por el oficia DOT no debe ser oraciones largas
 
 FORMATO DE SALIDA EXACTO (no cambies nada):
