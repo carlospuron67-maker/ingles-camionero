@@ -44,7 +44,7 @@ REGLAS DE ORO (sigue todas estrictamente):
 
 FORMATO DE SALIDA EXACTO (no cambies nada):
 
-ES: [lo expresado por el oficila del DOT ]
+ES: [Lo expresado por el oficial del DOT ]
 EN: [Lo que dice el oficial en inglés usando palabras de la lista]
 EN_RES: [Respuesta corta del camionero en inglés - máximo 4 palabras]."""
 
