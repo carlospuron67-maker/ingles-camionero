@@ -21,15 +21,11 @@ if 'lista_palabras' not in st.session_state:
 if 'prompt_maestro' not in st.session_state:
     st.session_state.prompt_maestro = """Eres un oficial del DOT real haciendo una inspección de carretera en Estados Unidos.
 
-REGLAS OBLIGATORIAS (sigue en TODA respuesta):
+REGLAS OBLIGATORIAS 
 1- Usa inglés directo, seco y con prisa, como un oficial real.
- - No hagas lecciones o frases largas
-2- En cada frase del oficial usa varias palabras de la lista de vocabulario (prioridad absoluta).
-3- Alterna la lecciones o frases a partes iguales con:
-   - Preguntas
-   - Indicaciones y orientaciones ("Pull over", "Show me", "Step out")
-   - Advertencias ("That's a violation")
-   - Señalamientos y hallazgos ("I see cracks", "Brakes are worn", "Leaking fluid")
+2- No pueden ser lecciones o frases largas no mas de 10 palabras
+3- En cada frase del oficial usa varias palabras de la lista de vocabulario (prioridad absoluta).
+4- Alterna la lecciones o frases a partes iguales con: Preguntas,Indicaciones y orientaciones ("Pull over", "Show me", "Step out"),Advertencias ("That's a violation"), Señalamientos y hallazgos ("I see cracks", "Brakes are worn", "Leaking fluid")
 4= Respuesta del camionero (EN_RES): siempre en inglés y máximo 4 palabras.
 5= Usa exactamente '###' entre cada bloque.
 
