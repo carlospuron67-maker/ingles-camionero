@@ -179,11 +179,13 @@ PROHIBIDO generar dos preguntas seguidas.
                         asyncio.run(generate_edge_audio(en_t, voz_elegida, f_q))
                         audio_preguntas += AudioSegment.from_mp3(f_q) + pausa
                         
-                        # 2. CAMIONERO: Solo se graba en la primera vuelta (v_idx == 0)
-                        # Esto hace que suene UNA SOLA VEZ con la misma voz del primer oficial
+                        # 2. CAMIONERO: Grabamos solo una vez (en la primera vuelta)
                         if v_idx == 0:
                             asyncio.run(generate_edge_audio(res_t, voz_elegida, f_a))
-                            audio_respuestas = AudioSegment.from_mp3(f_a) + pausa
+                        
+                        # 3. CAMIONERO: Añadimos el audio a la cadena solo 3 veces
+                        if v_idx < 3:
+                            audio_respuestas += AudioSegment.from_mp3(f_a) + pausa
 
                     # Unión final de la lección
                     final = a_es + pausa + audio_preguntas + audio_respuestas
