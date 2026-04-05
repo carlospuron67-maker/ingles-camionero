@@ -131,7 +131,7 @@ PROHIBIDO generar dos preguntas seguidas.
                         "content": prompt_final
                     }
                 ],
-                temperature=0.8
+                temperature=0.7
             )
 
             texto_ia = completion.choices[0].message.content
