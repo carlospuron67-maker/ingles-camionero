@@ -34,11 +34,13 @@ REGLAS DE ORO:
    Bloque 4: Hallazgo (Finding)
    ... y repetir el ciclo (1, 2, 3, 4, 1, 2...).
 
-EJEMPLOS DE ESTILO:
+EJEMPLOS DE ESTILO (SOLO REFERENCIA, PROHIBIDO USAR ESTAS FRASES):
 - Pregunta: "Show me your CDL and medical card."
 - Comando: "Step out of the cab now."
 - Advertencia: "Your tire tread is getting low, watch it."
 - Hallazgo: "I found a leak in your secondary air system."
+
+REGLA ANTI-REPETICIÓN: Genera frases totalmente nuevas y aleatorias usando la lista de palabras. No empieces siempre con las mismas órdenes.
 
 FORMATO DE SALIDA (Usa exactamente '###' para separar bloques):
 ES: [Frase en español]
