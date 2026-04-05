@@ -170,15 +170,20 @@ PROHIBIDO generar dos preguntas seguidas.
                     audio_preguntas = AudioSegment.empty()
                     audio_respuestas = AudioSegment.empty()
 
-                    # Bucle interno de voces
+                    # --- BUCLE INTERNO: EL OFICIAL REPITE, EL CAMIONERO NO ---
                     for v_idx, voz_elegida in enumerate(voces_leccion):
-                        f_q, f_a = f"q_{v_idx}.mp3", f"a_{v_idx}.mp3"
+                        f_q = f"q_{v_idx}.mp3"
+                        f_a = "res_camionero.mp3" # Nombre fijo para la respuesta
                         
+                        # 1. OFICIAL: Se graban las 5 voces distintas
                         asyncio.run(generate_edge_audio(en_t, voz_elegida, f_q))
-                        asyncio.run(generate_edge_audio(res_t, voz_elegida, f_a))
-                        
                         audio_preguntas += AudioSegment.from_mp3(f_q) + pausa
-                        audio_respuestas += AudioSegment.from_mp3(f_a) + pausa
+                        
+                        # 2. CAMIONERO: Solo se graba en la primera vuelta (v_idx == 0)
+                        # Esto hace que suene UNA SOLA VEZ con la misma voz del primer oficial
+                        if v_idx == 0:
+                            asyncio.run(generate_edge_audio(res_t, voz_elegida, f_a))
+                            audio_respuestas = AudioSegment.from_mp3(f_a) + pausa
 
                     # Unión final de la lección
                     final = a_es + pausa + audio_preguntas + audio_respuestas
