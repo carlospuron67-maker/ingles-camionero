@@ -161,7 +161,7 @@ PROHIBIDO generar dos preguntas seguidas.
     'en-GB-SoniaNeural',    # UK - Mujer (Acento británico, bueno para variar)
     'en-GB-RyanNeural',     # UK - Hombre
     'en-AU-WilliamNeural',  # Australia - Hombre (Acento diferente para entrenar el oído)
-    'en-CA-LiamNeural'      # Canadá - Hombre]
+    'en-CA-LiamNeural',]      # Canadá - Hombre]
     
 
                     voz = random.choice(voces)
