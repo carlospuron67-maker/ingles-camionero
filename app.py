@@ -150,18 +150,10 @@ PROHIBIDO generar dos preguntas seguidas.
                     st.write(f"🇺🇸 **{en_t}** | *{res_t}*")
 
                     # Reemplaza tu línea de voces por esta:
-                    voces = ['en-US-AndrewNeural',   # US - Hombre (Voz clara y profesional)
-    'en-US-BrianNeural',    # US - Hombre (Voz seria)
-    'en-US-ChristopherNeural', # US - Hombre (Voz profunda, tipo oficial)
-    'en-US-EricNeural',     # US - Hombre
-    'en-US-GuyNeural',      # US - Hombre (La que ya tenías)
-    'en-US-JennyNeural',    # US - Mujer (Muy natural, estándar)
-    'en-US-AvaNeural',      # US - Mujer (La que ya tenías)
-    'en-US-MichelleNeural', # US - Mujer
-    'en-GB-SoniaNeural',    # UK - Mujer (Acento británico, bueno para variar)
-    'en-GB-RyanNeural',     # UK - Hombre
-    'en-AU-WilliamNeural',  # Australia - Hombre (Acento diferente para entrenar el oído)
-    'en-CA-LiamNeural',]      # Canadá - Hombre]
+                    voces = ['en-US-AndrewNeural', 'en-US-BrianNeural', 'en-US-ChristopherNeural', 
+                        'en-US-EricNeural', 'en-US-GuyNeural', 'en-US-JennyNeural', 
+                        'en-US-AvaNeural', 'en-US-MichelleNeural', 'en-GB-SoniaNeural', 
+                        'en-GB-RyanNeural', 'en-AU-WilliamNeural', 'en-CA-LiamNeural']      # Canadá - Hombre]
     
 
                     #voz = random.choice(voces)
