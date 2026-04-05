@@ -134,9 +134,19 @@ PROHIBIDO generar dos preguntas seguidas.
                 temperature=0.7
             )
 
+            # --- 1. PROCESAMIENTO DE TEXTO ---
             texto_ia = completion.choices[0].message.content
             bloques = [b for b in texto_ia.split('###') if "EN:" in b]
 
+            # --- 2. DEFINICIÓN DE VOCES (IMPORTANTE: Debe estar aquí arriba) ---
+            voces_maestras = [
+                'en-US-AndrewNeural', 'en-US-BrianNeural', 'en-US-ChristopherNeural', 
+                'en-US-EricNeural', 'en-US-GuyNeural', 'en-US-JennyNeural', 
+                'en-US-AvaNeural', 'en-US-MichelleNeural', 'en-GB-SoniaNeural', 
+                'en-GB-RyanNeural', 'en-AU-WilliamNeural', 'en-CA-LiamNeural'
+            ]
+
+            # --- 3. BUCLE PRINCIPAL DE LECCIONES ---
             for i, bloque in enumerate(bloques):
                 es_m = re.search(r"ES:(.*)", bloque)
                 en_m = re.search(r"EN:(.*)", bloque)
@@ -149,27 +159,18 @@ PROHIBIDO generar dos preguntas seguidas.
                     st.write(f"🇪🇸 {es_t}")
                     st.write(f"🇺🇸 **{en_t}** | *{res_t}*")
 
-                    # Reemplaza tu línea de voces por esta:
-                    voces = ['en-US-AndrewNeural', 'en-US-BrianNeural', 'en-US-ChristopherNeural', 
-                        'en-US-EricNeural', 'en-US-GuyNeural', 'en-US-JennyNeural', 
-                        'en-US-AvaNeural', 'en-US-MichelleNeural', 'en-GB-SoniaNeural', 
-                        'en-GB-RyanNeural', 'en-AU-WilliamNeural', 'en-CA-LiamNeural']      # Canadá - Hombre]
-    
-
-                    #voz = random.choice(voces)
-                    
-                   # 1. Audio en español (una sola vez)
+                    # Audio en español
                     gTTS(es_t, lang='es').save("es.mp3")
                     a_es = AudioSegment.from_mp3("es.mp3")
                     pausa = AudioSegment.silent(duration=1000)
 
-                    # 2. Elegir 5 voces distintas para esta lección
+                    # Seleccionamos las 5 voces (Aquí es donde daba el error)
                     voces_leccion = random.sample(voces_maestras, 5)
                     
                     audio_preguntas = AudioSegment.empty()
                     audio_respuestas = AudioSegment.empty()
 
-                    # 3. Generar los 5 audios diferentes
+                    # Bucle interno de voces
                     for v_idx, voz_elegida in enumerate(voces_leccion):
                         f_q, f_a = f"q_{v_idx}.mp3", f"a_{v_idx}.mp3"
                         
@@ -179,7 +180,7 @@ PROHIBIDO generar dos preguntas seguidas.
                         audio_preguntas += AudioSegment.from_mp3(f_q) + pausa
                         audio_respuestas += AudioSegment.from_mp3(f_a) + pausa
 
-                    # 4. Montaje Final (Ya no usamos * 5, porque ya tenemos los 5 audios pegados)
+                    # Unión final de la lección
                     final = a_es + pausa + audio_preguntas + audio_respuestas
                     
                     audio_path = f"leccion_{i}.mp3"
