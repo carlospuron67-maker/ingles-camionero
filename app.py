@@ -164,16 +164,32 @@ PROHIBIDO generar dos preguntas seguidas.
     'en-CA-LiamNeural',]      # Canadá - Hombre]
     
 
-                    voz = random.choice(voces)
+                    #voz = random.choice(voces)
                     
+                   # 1. Audio en español (una sola vez)
                     gTTS(es_t, lang='es').save("es.mp3")
-                    asyncio.run(generate_edge_audio(en_t, voz, "q.mp3"))
-                    asyncio.run(generate_edge_audio(res_t, voz, "a.mp3"))
-
-                    a_es, a_q, a_a = AudioSegment.from_mp3("es.mp3"), AudioSegment.from_mp3("q.mp3"), AudioSegment.from_mp3("a.mp3")
+                    a_es = AudioSegment.from_mp3("es.mp3")
                     pausa = AudioSegment.silent(duration=1000)
+
+                    # 2. Elegir 5 voces distintas para esta lección
+                    voces_leccion = random.sample(voces_maestras, 5)
                     
-                    final = a_es + pausa + (a_q + pausa) * 5 + (a_a + pausa) * 5
+                    audio_preguntas = AudioSegment.empty()
+                    audio_respuestas = AudioSegment.empty()
+
+                    # 3. Generar los 5 audios diferentes
+                    for v_idx, voz_elegida in enumerate(voces_leccion):
+                        f_q, f_a = f"q_{v_idx}.mp3", f"a_{v_idx}.mp3"
+                        
+                        asyncio.run(generate_edge_audio(en_t, voz_elegida, f_q))
+                        asyncio.run(generate_edge_audio(res_t, voz_elegida, f_a))
+                        
+                        audio_preguntas += AudioSegment.from_mp3(f_q) + pausa
+                        audio_respuestas += AudioSegment.from_mp3(f_a) + pausa
+
+                    # 4. Montaje Final (Ya no usamos * 5, porque ya tenemos los 5 audios pegados)
+                    final = a_es + pausa + audio_preguntas + audio_respuestas
+                    
                     audio_path = f"leccion_{i}.mp3"
                     final.export(audio_path, format="mp3")
                     st.audio(audio_path)
