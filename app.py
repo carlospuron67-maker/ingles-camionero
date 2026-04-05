@@ -56,7 +56,6 @@ else:
 
 client = Groq(api_key=GROQ_API_KEY)
 MODELO_ACTUAL = "llama-3.3-70b-versatile"
-#MODELO_ACTUAL = "llama-3.1-8b-instant"
 
 async def generate_edge_audio(text, voice, filename):
     communicate = edge_tts.Communicate(text, voice)
@@ -88,15 +87,20 @@ if st.button("🚀 Generar Lecciones", use_container_width=True):
         try: os.remove(f)
         except: pass
     
+    # --- LÓGICA DE SELECCIÓN ALEATORIA (SOLO 60 PALABRAS) ---
+    palabras_full = [p.strip() for p in st.session_state.lista_palabras.split(',') if p.strip()]
+    palabras_seleccionadas = random.sample(palabras_full, min(len(palabras_full), 60))
+    lista_para_api = ", ".join(palabras_seleccionadas)
+    
     seed = random.randint(1, 100000)
     
-   #  Construcción dinámica del prompt
+    # Construcción dinámica del prompt usando solo las 60 palabras seleccionadas
     prompt_final = f"""
     {st.session_state.prompt_maestro}
     CANTIDAD: {cantidad} bloques.
     REGLA: Usa separador '###'.
-   
-LISTA DE PALABRAS (Prioridad): {st.session_state.lista_palabras}
+    
+LISTA DE PALABRAS (Prioridad): {lista_para_api}
 
 RECUERDA: Empieza con Pregunta, luego Comando, luego Advertencia, luego Hallazgo. 
 PROHIBIDO generar dos preguntas seguidas.
@@ -106,7 +110,7 @@ PROHIBIDO generar dos preguntas seguidas.
     EN: EN: [frase del oficial en inglés según el tipo: pregunta, comando, advertencia o hallazgo]
     RES: [respuesta corta en inglés]
     
-    PALABRAS CLAVE PARA USAR: {st.session_state.lista_palabras}
+    PALABRAS CLAVE PARA USAR: {lista_para_api}
     ID de variación: {seed}
     """
 
@@ -114,22 +118,18 @@ PROHIBIDO generar dos preguntas seguidas.
         with st.spinner("IA grabando audios..."):
             completion = client.chat.completions.create(
                 model=MODELO_ACTUAL,
-                #messages=[{"role": "user", "content": prompt_final}],
                 messages=[
-    {
-        "role": "system", 
-        "content": "You are a strict DOT inspector. You MUST follow the requested pattern (Question, Command, Warning, Finding) without exception. Do not repeat types. Be dry and direct."
-    },
-    {
-        "role": "user", 
-        "content": prompt_final
-    }
-],
+                    {
+                        "role": "system", 
+                        "content": "You are a strict DOT inspector. You MUST follow the requested pattern (Question, Command, Warning, Finding) without exception. Do not repeat types. Be dry and direct."
+                    },
+                    {
+                        "role": "user", 
+                        "content": prompt_final
+                    }
+                ],
                 temperature=0.5
             )
-    #================================================================================================
-
-    #===============================================================================================
 
             texto_ia = completion.choices[0].message.content
             bloques = [b for b in texto_ia.split('###') if "EN:" in b]
