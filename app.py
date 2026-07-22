@@ -56,9 +56,20 @@ else:
     st.error("Error: No se encontró GROQ_API_KEY en los secretos de Streamlit.")
     st.stop()
 
-client = Groq(api_key=GROQ_API_KEY)
-MODELO_ACTUAL = "llama-3.3-70b-versatile"
+#client = Groq(api_key=GROQ_API_KEY)
+#MODELO_ACTUAL = "llama-3.3-70b-versatile"
 #MODELO_ACTUAL = "llama-3.1-8b-instant"
+
+client = Groq(api_key=GROQ_API_KEY)
+# Selector lateral para probar la migración en vivo
+MODELO_ACTUAL = st.sidebar.selectbox(
+    "🧪 Modelo de IA (Migración Groq)",
+    [
+        "openai/gpt-oss-120b",     # Tu reemplazo principal (Más inteligente)
+        "llama-3.1-8b-instant",    # Alternativa rápida (Riesgo de mal formato)
+        "llama-3.3-70b-versatile"  # El que dejará de funcionar el 16 de agosto
+    ]
+)
 
 async def generate_edge_audio(text, voice, filename):
     communicate = edge_tts.Communicate(text, voice)
@@ -124,7 +135,7 @@ PROHIBIDO generar dos preguntas seguidas.
                 messages=[
                     {
                         "role": "system", 
-                        "content": "You are a strict DOT inspector. You MUST follow the requested pattern (Question, Command, Warning, Finding) without exception. Do not repeat types. Be dry and direct."
+                        "content": "You are a strict DOT inspector. You MUST output ONLY the requested blocks following the pattern (Question, Command, Warning, Finding). STRICT RULES: NO MARKDOWN formatting. NO BOLD TEXT or asterisks. NO INTRODUCTIONS or conversational filler. You must use EXACTLY the prefixes 'ES:', 'EN:', 'RES:' and separate blocks strictly with '###'. Any deviation breaks the system."
                     },
                     {
                         "role": "user", 
