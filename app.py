@@ -94,8 +94,14 @@ with st.expander("⚙️ Editar Lista de Palabras y Prompt"):
 
 # --- GENERACIÓN ---
 cantidad = st.slider("Frases a generar", 1, 15, 5)
-
+# NUEVO: Control para decidir el orden del audio
+orden_espanol = st.radio(
+    "¿Cuándo debe sonar la traducción en Español?",
+    ["Al principio (ES ➔ EN)", "Al final (EN ➔ ES)"],
+    horizontal=True
+)
 if st.button("🚀 Generar Lecciones", use_container_width=True):
+    
     # Limpiar archivos viejos
     for f in glob.glob("leccion_*.mp3"):
         try: os.remove(f)
@@ -199,8 +205,13 @@ PROHIBIDO generar dos preguntas seguidas.
                             audio_respuestas += AudioSegment.from_mp3(f_a) + pausa
 
                     # Unión final de la lección
-                    final = a_es + pausa + audio_preguntas + audio_respuestas
-                    
+                    #final = a_es + pausa + audio_preguntas + audio_respuestas
+                    if orden_espanol == "Al principio (ES ➔ EN)":
+                        # El español va primero
+                        final = a_es + pausa + audio_preguntas + audio_respuestas
+                    else:
+                        # El español va al final, después de la respuesta del camionero
+                        final = audio_preguntas + audio_respuestas + a_es + pausa
                     audio_path = f"leccion_{i}.mp3"
                     final.export(audio_path, format="mp3")
                     st.audio(audio_path)
