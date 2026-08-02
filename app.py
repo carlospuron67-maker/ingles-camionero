@@ -18,34 +18,35 @@ st.set_page_config(page_title="Trucker English Editor", page_icon="🚛", layout
 
 # --- MEMORIA DE SESIÓN (Para no perder cambios al recargar) ---
 if 'lista_palabras' not in st.session_state:
-    st.session_state.lista_palabras = """axle, beams, binder, box, BOL, bill of lading, inspection bay, lot, Mud flaps, parking space, pull-off, unload, brake, cab, cab card, CDL, medical card, logs, ELD, status, on-duty, off-duty, driving, permit, pull over, back up, keep going, slow down, arrow, flat, leaking, smoke, bulbs, lights, registration, insurance, charged, chassis, check, clean, clear, commercial, compliance, compliant, container, cracked, cracks, cuts, damage, DVIR, DOT, emergency, equipment, extinguisher, fifth-wheel, fine, fire, fluid, flush, fuses, gauge, glass, glove, high beams, low beams, horn, hours of service, identification, inspect, landing-gear, leaks, license, locked, mirror, paperwork, alcohol, drugs, substances, pressure, pre-trip, properly, release, reverse, rims, roadside, running, seatbelt, secured, sidewall, signs, signal, spare, step, tandem, tire, trailer, transmit, tread, triangles, truck, unit, valid, vehicle, washer, windshield, wipers, work, weight station"""
+    st.session_state.lista_palabras = """students, classroom, curriculum, assessment, proficiency, culture, lesson, planning, middle-school, adolescent, management, behavior, engagement, differentiation, instruction, standards, ACTFL, communication, interpretive, interpersonal, presentational, language, acquisition, immersion, fluency, heritage, native, learners, diversity, equity, inclusion, empathy, rapport, community, parents, collaboration, teamwork, department, technology, digital, interactive, project-based, inquiry, feedback, rubrics, objectives, scaffolding, growth, mindset, data, results, observation, professional, development, leadership, flexibility, patience, organization, transitions, routines, expectations, consistency, motivation, success, creativity, authentic, resources, literature, grammar, vocabulary, listening, speaking, reading, writing, comprehension, formative, summative, homework, grading, support, intervention, enrichment, IEP, accommodations, accessibility, safety, environment, social-emotional, learning, development, relationship, storytelling, games, music, multimedia, reflection, goals, ethics, multiculturalism, advocacy"""
 
 if 'prompt_maestro' not in st.session_state:
-    st.session_state.prompt_maestro = """Actúa como un oficial del DOT real en una inspección de carretera. 
+    st.session_state.prompt_maestro = """Actúa como un director de una escuela entrevistando a un candidato a una  posicion de español en una middle school. 
 Tu objetivo: Crear bloques de práctica siguiendo un patrón ESTRICTO.
 
 REGLAS DE ORO:
 1. Vocabulario: Usa palabras de la lista proporcionada.
 2. Estilo: Inglés directo, seco y rápido.
-3. SECUENCIA OBLIGATORIA (No puedes saltarte el orden):
-   Bloque 1: Pregunta (Question)
-   Bloque 2: Indicación/Comando (Command)
-   Bloque 3: Advertencia (Warning)
-   Bloque 4: Hallazgo (Finding)
-   ... y repetir el ciclo (1, 2, 3, 4, 1, 2...).
+3. Cada pregunta con su respuesta adecuada
 
-EJEMPLOS DE ESTILO (SOLO REFERENCIA, PROHIBIDO USAR ESTAS FRASES):
-- Pregunta: "Show me your CDL and medical card."
-- Comando: "Step out of the cab now."
-- Advertencia: "Your tire tread is getting low, watch it."
-- Hallazgo: "I found a leak in your secondary air system."
 
-REGLA ANTI-REPETICIÓN: Genera frases totalmente nuevas y aleatorias usando la lista de palabras. No empieces siempre con las mismas órdenes.
+REGLA ANTI-REPETICIÓN: Genera preguntas totalmente nuevas y aleatorias usando la lista de palabras. No empieces siempre con las mismas preguntas.
+REGLA En cada generacion nueva de pregunta y respuesta incluir dos las siguientes preguntas:
+1-What are your strengths?-My strengths as native Spanish speaker are teaching authentic language and culture, and creating interesting activities that help students stay engaged.I am patient, organized, and I always try to support each student in the way they learn best. I work well with others and enjoy collaborating in a team.I adapt quickly to new situations.I am very organized, and use my time  efficiently.Iam good at finding solutions with students' situations
+2-What are your weaknesses? Sometime I use too much Spanish in class and this can be difficult with students at first! but I support my ideas with :
+Gestures, very easy vocabulary ,images and videos in class.
+3- Tell me about you? I am native Spanish speaker  with strong passion for teaching with more that 10 years of experience in USA and more that 20 in Cuba. Also I love share  my culture with my students.
+I was teaching in WCHS> Spanish 1,2,3, Ap and Heritage and Bussines. I observe the students' needs and also use class time to addressing their difficulties
+Now I am teaching to write in cursive and the experience has been fantastic.
+4-Why do you want to work in this school?To continue working in this district—To help middle school students learn Spanish well, before they go to high school.
+5-What  makes you a strong candidate for his position? Because my class is unique! Iam native Spanish speaker, with experience ,passion ,for my  culture, that help students integrate into a multicultural community.
+
+
 
 FORMATO DE SALIDA (Usa exactamente '###' para separar bloques):
 ES: [Frase en español]
-EN: [Frase del oficial]
-RES: [Respuesta del camionero, máx 4 palabras]
+EN: [Frase del Director]
+RES: [Respuesta del entrevistado deber ser tamaño medio entre 6 y 12 palabras]
 ###"""
 
 
@@ -56,27 +57,16 @@ else:
     st.error("Error: No se encontró GROQ_API_KEY en los secretos de Streamlit.")
     st.stop()
 
-#client = Groq(api_key=GROQ_API_KEY)
-#MODELO_ACTUAL = "llama-3.3-70b-versatile"
-#MODELO_ACTUAL = "llama-3.1-8b-instant"
-
 client = Groq(api_key=GROQ_API_KEY)
-# Selector lateral para probar la migración en vivo
-MODELO_ACTUAL = st.sidebar.selectbox(
-    "🧪 Modelo de IA (Migración Groq)",
-    [
-        "openai/gpt-oss-120b",     # Tu reemplazo principal (Más inteligente)
-        "llama-3.1-8b-instant",    # Alternativa rápida (Riesgo de mal formato)
-        "llama-3.3-70b-versatile"  # El que dejará de funcionar el 16 de agosto
-    ]
-)
+MODELO_ACTUAL = "llama-3.3-70b-versatile"
+#MODELO_ACTUAL = "llama-3.1-8b-instant"
 
 async def generate_edge_audio(text, voice, filename):
     communicate = edge_tts.Communicate(text, voice)
     await communicate.save(filename)
 
 # --- INTERFAZ ---
-st.title("🚛 Trucker English Pro")
+st.title("🚛 Marlen English Pro")
 
 # --- BLOQUE DE EDICIÓN (EXPANDER) ---
 with st.expander("⚙️ Editar Lista de Palabras y Prompt"):
@@ -94,14 +84,28 @@ with st.expander("⚙️ Editar Lista de Palabras y Prompt"):
 
 # --- GENERACIÓN ---
 cantidad = st.slider("Frases a generar", 1, 15, 5)
-# NUEVO: Control para decidir el orden del audio
-orden_espanol = st.radio(
-    "¿Cuándo debe sonar la traducción en Español?",
-    ["Al principio (ES ➔ EN)", "Al final (EN ➔ ES)"],
+
+# --- NUEVO: OPCIÓN DE POSICIÓN DEL AUDIO EN ESPAÑOL (ES) ---
+st.markdown("**🎚️ Posición de la traducción (ES) dentro de cada lección**")
+orden_es = st.radio(
+    "¿Dónde quieres escuchar la frase en español?",
+    ["Al principio", "Al final", "Personalizado"],
     horizontal=True
 )
+
+pos_personalizada = 1
+if orden_es == "Personalizado":
+    pos_personalizada = st.number_input(
+        "Reproducir el ES después del audio número:",
+        min_value=1,
+        max_value=20,
+        value=1,
+        step=1,
+        help="Ej: 1 = después del primer audio (la pregunta). 2 = después del segundo audio, etc. "
+             "Si el número es mayor a la cantidad de audios de la lección, el ES se pondrá al final."
+    )
+
 if st.button("🚀 Generar Lecciones", use_container_width=True):
-    
     # Limpiar archivos viejos
     for f in glob.glob("leccion_*.mp3"):
         try: os.remove(f)
@@ -122,13 +126,11 @@ if st.button("🚀 Generar Lecciones", use_container_width=True):
     
 LISTA DE PALABRAS (Prioridad): {lista_para_api}
 
-RECUERDA: Empieza con Pregunta, luego Comando, luego Advertencia, luego Hallazgo. 
-PROHIBIDO generar dos preguntas seguidas.
 
     FORMATO:
     ES: [frase en español]
-    EN: EN: [frase del oficial en inglés según el tipo: pregunta, comando, advertencia o hallazgo]
-    RES: [respuesta corta en inglés]
+    EN: EN: [frase del Director en inglés según el tipo: pregunta, comando, advertencia o hallazgo]
+    RES: [respuesta de tamaño medio en inglés]
     
     PALABRAS CLAVE PARA USAR: {lista_para_api}
     ID de variación: {seed}
@@ -141,7 +143,7 @@ PROHIBIDO generar dos preguntas seguidas.
                 messages=[
                     {
                         "role": "system", 
-                        "content": "You are a strict DOT inspector. You MUST output ONLY the requested blocks following the pattern (Question, Command, Warning, Finding). STRICT RULES: NO MARKDOWN formatting. NO BOLD TEXT or asterisks. NO INTRODUCTIONS or conversational filler. You must use EXACTLY the prefixes 'ES:', 'EN:', 'RES:' and separate blocks strictly with '###'. Any deviation breaks the system."
+                        "content": "You are a strict Principal School. You MUST follow the requested pattern Question, without exception. Do not repeat types. Be dry and direct."
                     },
                     {
                         "role": "user", 
@@ -182,19 +184,21 @@ PROHIBIDO generar dos preguntas seguidas.
                     pausa = AudioSegment.silent(duration=1000)
 
                     # Seleccionamos las 5 voces (Aquí es donde daba el error)
-                    voces_leccion = random.sample(voces_maestras, 5)
-                    
-                    audio_preguntas = AudioSegment.empty()
-                    audio_respuestas = AudioSegment.empty()
+                    voces_leccion = random.sample(voces_maestras, 1)
+
+                    # --- NUEVO: en vez de acumular en dos bloques fijos (preguntas/respuestas),
+                    # construimos una lista ordenada de "clips" para poder insertar el ES
+                    # en la posición que el usuario elija.
+                    audio_clips = []  # cada elemento ya trae su pausa incluida
 
                     # --- BUCLE INTERNO: EL OFICIAL REPITE, EL CAMIONERO NO ---
                     for v_idx, voz_elegida in enumerate(voces_leccion):
                         f_q = f"q_{v_idx}.mp3"
                         f_a = "res_camionero.mp3" # Nombre fijo para la respuesta
                         
-                        # 1. OFICIAL: Se graban las 5 voces distintas
+                        # 1. OFICIAL: Se graban las voces distintas
                         asyncio.run(generate_edge_audio(en_t, voz_elegida, f_q))
-                        audio_preguntas += AudioSegment.from_mp3(f_q) + pausa
+                        audio_clips.append(AudioSegment.from_mp3(f_q) + pausa)
                         
                         # 2. CAMIONERO: Grabamos solo una vez (en la primera vuelta)
                         if v_idx == 0:
@@ -202,16 +206,26 @@ PROHIBIDO generar dos preguntas seguidas.
                         
                         # 3. CAMIONERO: Añadimos el audio a la cadena solo 3 veces
                         if v_idx < 3:
-                            audio_respuestas += AudioSegment.from_mp3(f_a) + pausa
+                            audio_clips.append(AudioSegment.from_mp3(f_a) + pausa)
 
-                    # Unión final de la lección
-                    #final = a_es + pausa + audio_preguntas + audio_respuestas
-                    if orden_espanol == "Al principio (ES ➔ EN)":
-                        # El español va primero
-                        final = a_es + pausa + audio_preguntas + audio_respuestas
-                    else:
-                        # El español va al final, después de la respuesta del camionero
-                        final = audio_preguntas + audio_respuestas + a_es + pausa
+                    # --- NUEVO: Insertar el clip de ES en la posición elegida ---
+                    es_clip = a_es + pausa
+
+                    if orden_es == "Al principio":
+                        pos_insercion = 0
+                    elif orden_es == "Al final":
+                        pos_insercion = len(audio_clips)
+                    else:  # Personalizado
+                        # Se limita para no salirse del rango disponible
+                        pos_insercion = min(pos_personalizada, len(audio_clips))
+
+                    audio_clips.insert(pos_insercion, es_clip)
+
+                    # Unión final de la lección respetando el orden con ES incluido
+                    final = AudioSegment.empty()
+                    for clip in audio_clips:
+                        final += clip
+                    
                     audio_path = f"leccion_{i}.mp3"
                     final.export(audio_path, format="mp3")
                     st.audio(audio_path)
