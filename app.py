@@ -39,6 +39,11 @@ REGLA: En cada generación nueva de pregunta y respuesta, incluir al menos dos d
 6-Pull into the weigh station up ahead.-Yes sir, pulling in now.
 7-Step out of the truck, please, for a quick inspection.-No problem, officer. Stepping out now.
 
+REGLA DE IDIOMA (MUY IMPORTANTE):
+- La línea "EN:" DEBE estar completamente en inglés.
+- La línea "RES:" DEBE estar completamente en inglés (es la respuesta del camionero al oficial). NUNCA generes "RES:" en español.
+- Solo la línea "ES:" va en español, como traducción de "EN:".
+
 REGLA DE TRADUCCIÓN (MUY IMPORTANTE):
 La línea "ES:" DEBE ser una traducción exacta, natural y fiel de la línea "EN:" (mismo significado, mismo tono).
 - Usa español latino natural, como lo hablaría un hispanohablante nativo (evita calcos literales del inglés).
@@ -47,8 +52,8 @@ La línea "ES:" DEBE ser una traducción exacta, natural y fiel de la línea "EN
 
 FORMATO DE SALIDA (Usa exactamente '###' para separar bloques):
 ES: [Traducción natural y fiel al español de la línea EN]
-EN: [Pregunta u orden del oficial en inglés]
-RES: [Respuesta del camionero, tamaño medio entre 6 y 12 palabras]
+EN: [Pregunta u orden del oficial, en inglés]
+RES: [Respuesta corta del camionero, en inglés, entre 4 y 8 palabras]
 ###"""
 
 
@@ -139,9 +144,9 @@ LISTA DE PALABRAS (Prioridad): {lista_para_api}
 
 
     FORMATO:
-    ES: [frase en español]
-    EN: EN: [frase del Director en inglés según el tipo: pregunta, comando, advertencia o hallazgo]
-    RES: [respuesta de tamaño medio en inglés]
+    ES: [traducción natural y fiel al español de la línea EN]
+    EN: [frase del oficial en inglés según el tipo: pregunta, comando, advertencia o hallazgo]
+    RES: [respuesta corta del camionero, EN INGLÉS, entre 4 y 8 palabras. NUNCA en español]
     
     PALABRAS CLAVE PARA USAR: {lista_para_api}
     ID de variación: {seed}
