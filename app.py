@@ -65,8 +65,12 @@ else:
     st.stop()
 
 client = Groq(api_key=GROQ_API_KEY)
-MODELO_ACTUAL = "llama-3.3-70b-versatile"
-#MODELO_ACTUAL = "llama-3.1-8b-instant"
+
+MODELOS_DISPONIBLES = {
+    "Llama 3.3 70B Versatile (más preciso, más lento)": "llama-3.3-70b-versatile",
+    "Llama 3.1 8B Instant (más rápido, menos preciso)": "llama-3.1-8b-instant",
+    "GPT-OSS 120B (OpenAI, vía Groq)": "openai/gpt-oss-120b",
+}
 
 async def generate_edge_audio(text, voice, filename):
     communicate = edge_tts.Communicate(text, voice)
@@ -111,6 +115,14 @@ if orden_es == "Personalizado":
         help="Ej: 1 = después del primer audio (la pregunta). 2 = después del segundo audio, etc. "
              "Si el número es mayor a la cantidad de audios de la lección, el ES se pondrá al final."
     )
+
+# --- NUEVO: SELECCIÓN DE MODELO DE IA ---
+modelo_elegido_label = st.selectbox(
+    "🤖 Modelo de IA",
+    list(MODELOS_DISPONIBLES.keys()),
+    index=0
+)
+MODELO_ACTUAL = MODELOS_DISPONIBLES[modelo_elegido_label]
 
 # --- NUEVO: CANTIDAD DE VOCES DISTINTAS PARA LA PREGUNTA (OFICIAL) ---
 cantidad_voces = st.slider(
