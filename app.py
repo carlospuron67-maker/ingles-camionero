@@ -43,8 +43,14 @@ Now I am teaching to write in cursive and the experience has been fantastic.
 
 
 
+REGLA DE TRADUCCIÓN (MUY IMPORTANTE):
+La línea "ES:" DEBE ser una traducción exacta, natural y fiel de la línea "EN:" (mismo significado, mismo tono).
+- Usa español latino natural, como lo hablaría un hispanohablante nativo (evita calcos literales del inglés).
+- No agregues ni quites información: el significado de ES y EN debe ser idéntico.
+- Evita traducciones robóticas o demasiado formales; que suene a conversación real.
+
 FORMATO DE SALIDA (Usa exactamente '###' para separar bloques):
-ES: [Frase en español]
+ES: [Traducción natural y fiel al español de la línea EN]
 EN: [Frase del Director]
 RES: [Respuesta del entrevistado deber ser tamaño medio entre 6 y 12 palabras]
 ###"""
@@ -159,7 +165,7 @@ LISTA DE PALABRAS (Prioridad): {lista_para_api}
                         "content": prompt_final
                     }
                 ],
-                temperature=0.7
+                temperature=0.4
             )
 
             # --- 1. PROCESAMIENTO DE TEXTO ---
