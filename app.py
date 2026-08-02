@@ -67,9 +67,9 @@ else:
 client = Groq(api_key=GROQ_API_KEY)
 
 MODELOS_DISPONIBLES = {
-    "Llama 3.3 70B Versatile (más preciso, más lento)": "llama-3.3-70b-versatile",
-    "Llama 3.1 8B Instant (más rápido, menos preciso)": "llama-3.1-8b-instant",
     "GPT-OSS 120B (OpenAI, vía Groq)": "openai/gpt-oss-120b",
+    "Llama 3.1 8B Instant (más rápido, menos preciso)": "llama-3.1-8b-instant",
+    "Llama 3.3 70B Versatile (más preciso, más lento)": "llama-3.3-70b-versatile",
 }
 
 async def generate_edge_audio(text, voice, filename):
