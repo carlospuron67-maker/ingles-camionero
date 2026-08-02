@@ -18,30 +18,26 @@ st.set_page_config(page_title="Trucker English Editor", page_icon="🚛", layout
 
 # --- MEMORIA DE SESIÓN (Para no perder cambios al recargar) ---
 if 'lista_palabras' not in st.session_state:
-    st.session_state.lista_palabras = """students, classroom, curriculum, assessment, proficiency, culture, lesson, planning, middle-school, adolescent, management, behavior, engagement, differentiation, instruction, standards, ACTFL, communication, interpretive, interpersonal, presentational, language, acquisition, immersion, fluency, heritage, native, learners, diversity, equity, inclusion, empathy, rapport, community, parents, collaboration, teamwork, department, technology, digital, interactive, project-based, inquiry, feedback, rubrics, objectives, scaffolding, growth, mindset, data, results, observation, professional, development, leadership, flexibility, patience, organization, transitions, routines, expectations, consistency, motivation, success, creativity, authentic, resources, literature, grammar, vocabulary, listening, speaking, reading, writing, comprehension, formative, summative, homework, grading, support, intervention, enrichment, IEP, accommodations, accessibility, safety, environment, social-emotional, learning, development, relationship, storytelling, games, music, multimedia, reflection, goals, ethics, multiculturalism, advocacy"""
+    st.session_state.lista_palabras = """license, registration, insurance, logbook, hours of service, ELD, electronic logging device, weigh station, DOT number, trailer, axle, brakes, inspection, violation, ticket, citation, warning, fine, speed limit, cargo, freight, load, overweight, permit, route, GPS, fatigue, rest stop, fuel, toll, border, customs, manifest, hazmat, tires, tread, seatbelt, mirror, blind spot, merge, highway, checkpoint, breathalyzer, sober, license plate, VIN, dock, forklift, pallet, dispatcher, delivery, schedule, detour, construction zone, chain law, ice, snow, black ice, emergency, breakdown, roadside assistance, tow truck, officer, trooper, patrol, court, appeal, CDL, commercial driver's license, endorsement, medical card, drug test, alcohol, pre-trip inspection, post-trip inspection, headlights, taillights, turn signal, windshield, wiper, fire extinguisher, triangle, reflector, coupling, fifth wheel, jackknife, tarp, straps, chains, bill of lading, shipper, receiver, dock worker, layover, sleeper berth, off-duty, on-duty, driving time, break, pull over, step out, license and registration, destination, origin"""
 
 if 'prompt_maestro' not in st.session_state:
-    st.session_state.prompt_maestro = """Actúa como un director de una escuela entrevistando a un candidato a una  posicion de español en una middle school. 
+    st.session_state.prompt_maestro = """Actúa como un oficial de policía / inspector de DOT (Department of Transportation) que detiene a un camionero en carretera para una inspección de rutina o una parada de tráfico.
 Tu objetivo: Crear bloques de práctica siguiendo un patrón ESTRICTO.
 
 REGLAS DE ORO:
-1. Vocabulario: Usa palabras de la lista proporcionada.
-2. Estilo: Inglés directo, seco y rápido.
-3. Cada pregunta con su respuesta adecuada
-
+1. Vocabulario: Usa palabras de la lista proporcionada (términos de camionero: licencia, carga, horas de manejo, inspección, etc.).
+2. Estilo: Inglés directo, seco, autoritario y rápido, como lo hablaría un oficial real en una parada de tráfico.
+3. Cada pregunta u orden del oficial debe tener su respuesta adecuada del camionero.
 
 REGLA ANTI-REPETICIÓN: Genera preguntas totalmente nuevas y aleatorias usando la lista de palabras. No empieces siempre con las mismas preguntas.
-REGLA En cada generacion nueva de pregunta y respuesta incluir dos las siguientes preguntas:
-1-What are your strengths?-My strengths as native Spanish speaker are teaching authentic language and culture, and creating interesting activities that help students stay engaged.I am patient, organized, and I always try to support each student in the way they learn best. I work well with others and enjoy collaborating in a team.I adapt quickly to new situations.I am very organized, and use my time  efficiently.Iam good at finding solutions with students' situations
-2-What are your weaknesses? Sometime I use too much Spanish in class and this can be difficult with students at first! but I support my ideas with :
-Gestures, very easy vocabulary ,images and videos in class.
-3- Tell me about you? I am native Spanish speaker  with strong passion for teaching with more that 10 years of experience in USA and more that 20 in Cuba. Also I love share  my culture with my students.
-I was teaching in WCHS> Spanish 1,2,3, Ap and Heritage and Bussines. I observe the students' needs and also use class time to addressing their difficulties
-Now I am teaching to write in cursive and the experience has been fantastic.
-4-Why do you want to work in this school?To continue working in this district—To help middle school students learn Spanish well, before they go to high school.
-5-What  makes you a strong candidate for his position? Because my class is unique! Iam native Spanish speaker, with experience ,passion ,for my  culture, that help students integrate into a multicultural community.
-
-
+REGLA: En cada generación nueva de pregunta y respuesta, incluir al menos dos de las siguientes preguntas/situaciones típicas:
+1-License and registration, please.-Here you go, officer. My license, registration, and insurance.
+2-Where are you coming from and where are you headed?-I'm coming from Denver, heading to Chicago with a full load.
+3-How many hours have you been driving today?-I've been driving for about six hours. My logbook is up to date.
+4-What are you hauling today?-I'm hauling general freight, fully secured and within weight limits.
+5-I need to see your logbook and your ELD.-Sure, here's my logbook. Everything is logged electronically too.
+6-Pull into the weigh station up ahead.-Yes sir, pulling in now.
+7-Step out of the truck, please, for a quick inspection.-No problem, officer. Stepping out now.
 
 REGLA DE TRADUCCIÓN (MUY IMPORTANTE):
 La línea "ES:" DEBE ser una traducción exacta, natural y fiel de la línea "EN:" (mismo significado, mismo tono).
@@ -51,8 +47,8 @@ La línea "ES:" DEBE ser una traducción exacta, natural y fiel de la línea "EN
 
 FORMATO DE SALIDA (Usa exactamente '###' para separar bloques):
 ES: [Traducción natural y fiel al español de la línea EN]
-EN: [Frase del Director]
-RES: [Respuesta del entrevistado deber ser tamaño medio entre 6 y 12 palabras]
+EN: [Pregunta u orden del oficial en inglés]
+RES: [Respuesta del camionero, tamaño medio entre 6 y 12 palabras]
 ###"""
 
 
@@ -72,7 +68,7 @@ async def generate_edge_audio(text, voice, filename):
     await communicate.save(filename)
 
 # --- INTERFAZ ---
-st.title("🚛 Marlen English Pro")
+st.title("🚛 Trucker English Pro")
 
 # --- BLOQUE DE EDICIÓN (EXPANDER) ---
 with st.expander("⚙️ Editar Lista de Palabras y Prompt"):
