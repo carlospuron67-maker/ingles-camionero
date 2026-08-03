@@ -110,8 +110,8 @@ if orden_es == "Personalizado":
         "Reproducir el ES después del audio número:",
         min_value=1,
         max_value=20,
-        value=1,
-        step=2,
+        value=2,
+        step=1,
         help="Ej: 1 = después del primer audio (la pregunta). 2 = después del segundo audio, etc. "
              "Si el número es mayor a la cantidad de audios de la lección, el ES se pondrá al final."
     )
