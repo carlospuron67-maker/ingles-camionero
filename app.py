@@ -111,7 +111,7 @@ if orden_es == "Personalizado":
         min_value=1,
         max_value=20,
         value=1,
-        step=1,
+        step=2,
         help="Ej: 1 = después del primer audio (la pregunta). 2 = después del segundo audio, etc. "
              "Si el número es mayor a la cantidad de audios de la lección, el ES se pondrá al final."
     )
@@ -129,7 +129,7 @@ cantidad_voces = st.slider(
     "🎙️ Cantidad de voces distintas para la pregunta en inglés",
     min_value=1,
     max_value=12,
-    value=3,
+    value=5,
     help="Cuántos acentos/voces distintas leerán la frase del oficial en cada lección, uno tras otro."
 )
 
